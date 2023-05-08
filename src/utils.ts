@@ -10,7 +10,7 @@ export async function startLint(...paths: string[]) {
 }
 
 export interface LoadConfigResult {
-  config: Array<UrlConfig>;
+  config: Array<OpenAPIConfig>;
   filepath: string;
   isEmpty?: boolean;
 }

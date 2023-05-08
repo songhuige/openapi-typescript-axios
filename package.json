@@ -7,16 +7,14 @@
   "packageManager": "yarn@1.22.5",
   "type": "module",
   "files": [
-    "cli.js",
-    "lib",
-    "typings"
+    "lib"
   ],
   "types": "src/index.d.ts",
   "bin": {
     "gen-schema": "./cli.js"
   },
   "scripts": {
-    "build": "tsc --outDir lib --sourceMap false",
+    "build": "tsc --outDir lib --sourceMap false && ncp ./typings ./lib",
     "lint": "eslint **/*.{ts,js,json,md}",
     "lint:fix": "yarn lint --fix",
     "format": "prettier . --write",
@@ -39,6 +37,7 @@
     "eslint-plugin-unused-imports": "^2.0.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
+    "ncp": "^2.0.0",
     "openapi-typescript": "^6.2.4",
     "prettier": "^2.8.8",
     "typescript": "^5.0.4"

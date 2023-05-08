@@ -19,14 +19,14 @@ async function gen() {
   services.forEach(async ({ name, url }) => {
     const output = await openapiTS(url, { version: 3 }).catch(console.log);
     if (output) {
-      const filePath = path.join(__dirname, `../schema/${name}.ts`);
-      if (!fs.existsSync(path.join(__dirname, `../schema`))) {
-        fs.mkdirSync(path.join(__dirname, `../schema`));
+      const filePath = path.join(__dirname, `./schema/${name}.ts`);
+      if (!fs.existsSync(path.join(__dirname, `./schema`))) {
+        fs.mkdirSync(path.join(__dirname, `./schema`));
       }
       fs.writeFileSync(filePath, output);
+      console.log(`ts: ${filePath}`);
       await startLint(filePath);
       await genSchemaWrapper(name);
-      console.log(`dts: ${filePath}`);
     }
   });
 }
@@ -59,11 +59,13 @@ export type ${camelCase}Response<
   P extends P1,
   M extends M1<P> = any,
   S extends S1<P, M> = any
-> = ResponseBody<paths, P, M, S>;
+> = Promise<AxiosResponse<ResponseBody<paths, P, M, S>>>;
   `;
 
-  const filePath = path.join(__dirname, `../schema/${module}-wrapper.ts`);
+  const fileName = `./schema/${module}-wrapper.ts`;
+  const filePath = path.join(__dirname, fileName);
   fs.writeFileSync(filePath, text);
+  console.log(`dts: ${fileName}`);
   await startLint(filePath);
 }
 

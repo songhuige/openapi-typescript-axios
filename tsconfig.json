@@ -16,6 +16,6 @@
     },
     "lib": ["esnext"]
   },
-  "include": ["src/**/*", "typings/**/*.d.ts", "cli.js"],
+  "include": ["src/**/*", "typings/**/*.d.ts"],
   "exclude": ["node_modules", "lib"]
 }
