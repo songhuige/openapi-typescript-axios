@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2016",
+    "useDefineForClassFields": true,
+    "module": "esnext",
+    "moduleResolution": "node16",
+    "isolatedModules": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "types": ["node"],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "lib": ["esnext"]
+  },
+  "include": ["src/**/*", "typings/**/*.d.ts", "cli.js"],
+  "exclude": ["node_modules", "lib"]
+}
