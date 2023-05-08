@@ -1,3 +1,8 @@
+type UrlConfig = {
+  name: string;
+  url: string;
+};
+
 type APIMethod<PS, URL extends keyof PS> = keyof PS[URL];
 
 type APIStates<

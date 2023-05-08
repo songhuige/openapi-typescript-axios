@@ -9,7 +9,10 @@ const __dirname = process.cwd();
 async function gen() {
   const config = await loadConfig();
 
-  if (config === null || config.isEmpty) return;
+  if (config === null || config.isEmpty) {
+    console.log("请先配置'openapi-typescript-axios'文件");
+    return;
+  }
 
   const services = config.config;
 
@@ -32,32 +35,31 @@ async function genSchemaWrapper(module: string) {
   const camelCase = `${module.substring(0, 1).toUpperCase()}${module.substring(
     1
   )}`;
-  const text = `
-  import type { paths } from "./${module}";
+  const text = `import type { paths } from "./${module}";
 
-  type P1 = keyof paths;
+type P1 = keyof paths;
 
-  type M1<P extends P1> = APIMethod<paths, P>;
+type M1<P extends P1> = APIMethod<paths, P>;
 
-  type S1<P extends P1, M extends M1<P>> = APIStates<paths, P, M>;
+type S1<P extends P1, M extends M1<P>> = APIStates<paths, P, M>;
 
-  export type ${camelCase}API<
-    P extends P1,
-    M extends M1<P> = any,
-    S extends S1<P, M> = any
-  > = API<paths, P, M, S>;
+export type ${camelCase}API<
+  P extends P1,
+  M extends M1<P> = any,
+  S extends S1<P, M> = any
+> = API<paths, P, M, S>;
 
-  export type ${camelCase}Param<P extends P1, M extends M1<P> = any> = RequestParam<
-    paths,
-    P,
-    M
-  >;
+export type ${camelCase}Param<P extends P1, M extends M1<P> = any> = RequestParam<
+  paths,
+  P,
+  M
+>;
 
-  export type ${camelCase}Response<
-    P extends P1,
-    M extends M1<P> = any,
-    S extends S1<P, M> = any
-  > = ResponseBody<paths, P, M, S>;
+export type ${camelCase}Response<
+  P extends P1,
+  M extends M1<P> = any,
+  S extends S1<P, M> = any
+> = ResponseBody<paths, P, M, S>;
   `;
 
   const filePath = path.join(__dirname, `../schema/${module}-wrapper.ts`);

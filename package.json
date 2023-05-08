@@ -11,11 +11,7 @@
     "lib",
     "typings"
   ],
-  "exports": {
-    ".": "./cli.js",
-    "./lib": "./lib",
-    "./typings": "./typings"
-  },
+  "types": "src/index.d.ts",
   "bin": {
     "gen-schema": "./cli.js"
   },
@@ -24,7 +20,7 @@
     "lint": "eslint **/*.{ts,js,json,md}",
     "lint:fix": "yarn lint --fix",
     "format": "prettier . --write",
-    "postinstall": "husky install && git config --local core.autocrlf false"
+    "postinstall": "husky install"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.3",

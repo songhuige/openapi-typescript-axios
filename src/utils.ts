@@ -10,7 +10,7 @@ export async function startLint(...paths: string[]) {
 }
 
 export interface LoadConfigResult {
-  config: Array<{ name: string; url: string }>;
+  config: Array<UrlConfig>;
   filepath: string;
   isEmpty?: boolean;
 }
