@@ -1,4 +1,4 @@
 #!/usr/bin/env node
-export { main } from "./lib/index";
+import { main } from "./lib/index";
 
 main();
