@@ -7,9 +7,11 @@
   "packageManager": "yarn@1.22.5",
   "type": "module",
   "files": [
-    "lib"
+    "lib",
+    "typings",
+    "cli.js"
   ],
-  "types": "src/index.d.ts",
+  "types": "typings/index.d.ts",
   "bin": {
     "gen-schema": "./cli.js"
   },
