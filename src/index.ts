@@ -10,7 +10,7 @@ async function gen() {
   const config = await loadConfig();
 
   if (config === null || config.isEmpty) {
-    console.log("请先配置'openapi-typescript-axios'文件");
+    console.log("请先配置'openapi-gen'文件");
     return;
   }
 

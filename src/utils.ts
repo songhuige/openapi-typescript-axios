@@ -19,7 +19,7 @@ export interface LoadConfigResult {
  * @link https://github.com/conventional-changelog/commitlint/blob/master/%40commitlint/load/src/utils/load-config.ts#L11
  */
 export async function loadConfig(): Promise<LoadConfigResult | null> {
-  const moduleName = "openapi-typescript-axios";
+  const moduleName = "openapi-gen";
   const tsLoader = TypeScriptLoader();
   const explorer = cosmiconfig(moduleName, {
     searchPlaces: [
