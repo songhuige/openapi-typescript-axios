@@ -16,7 +16,7 @@
     "gen-schema": "./cli.js"
   },
   "scripts": {
-    "build": "tsc --outDir lib --sourceMap false && ncp ./typings ./lib",
+    "build": "tsc --outDir lib --sourceMap false",
     "lint": "eslint **/*.{ts,js,json,md}",
     "lint:fix": "yarn lint --fix",
     "format": "prettier . --write",
