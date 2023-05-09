@@ -59,8 +59,8 @@ export type ${camelCase}Response<
   P extends P1,
   M extends M1<P> = any,
   S extends S1<P, M> = any
-> = Promise<AxiosResponse<ResponseBody<paths, P, M, S>>>;
-  `;
+> = ResponseBody<paths, P, M, S>;
+`;
 
   const fileName = `./schema/${module}-wrapper.ts`;
   const filePath = path.join(__dirname, fileName);
