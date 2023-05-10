@@ -1,9 +1,12 @@
 type OpenAPIConfig = {
-  apiVersion: 2 | 3;
   services: Array<{
     name: string;
     url: string;
   }>;
+  openApiConfig: {
+    httpHeaders: Record<string, any>;
+    version: 2 | 3;
+  };
 };
 
 type APIMethod<PS, URL extends keyof PS> = keyof PS[URL];

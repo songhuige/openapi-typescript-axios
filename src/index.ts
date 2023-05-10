@@ -14,12 +14,10 @@ async function gen() {
     return;
   }
 
-  const { services, apiVersion } = config.config;
+  const { services, openApiConfig = {} } = config.config;
 
   services.forEach(async ({ name, url }) => {
-    const output = await openapiTS(url, {
-      version: apiVersion,
-    }).catch(console.log);
+    const output = await openapiTS(url, openApiConfig).catch(console.log);
     if (output) {
       const filePath = path.join(__dirname, `./schema/${name}.ts`);
       if (!fs.existsSync(path.join(__dirname, `./schema`))) {
