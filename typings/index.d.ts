@@ -1,6 +1,9 @@
 type OpenAPIConfig = {
-  name: string;
-  url: string;
+  apiVersion: 2 | 3;
+  services: Array<{
+    name: string;
+    url: string;
+  }>;
 };
 
 type APIMethod<PS, URL extends keyof PS> = keyof PS[URL];
