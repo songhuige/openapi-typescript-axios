@@ -23,12 +23,18 @@ async function gen() {
       if (!fs.existsSync(path.join(__dirname, `./schema`))) {
         fs.mkdirSync(path.join(__dirname, `./schema`));
       }
-      fs.writeFileSync(filePath, output);
+      fs.writeFileSync(filePath, apifoxFix(output));
       console.log(`ts: ${filePath}`);
       await startLint(filePath);
       await genSchemaWrapper(name);
     }
   });
+}
+
+function apifoxFix(output: string) {
+  output = output.replaceAll("%C2%AB", "«");
+  output = output.replaceAll("%C2%BB", "»");
+  return output;
 }
 
 async function genSchemaWrapper(module: string) {
