@@ -37,7 +37,7 @@
     "typescript": "^5.0.4"
   },
   "peerDependencies": {
-    "openapi-typescript": "^6.2.0 | ^5.4.1"
+    "openapi-typescript": "^6.2.0 || ^5.4.1"
   },
   "dependencies": {
     "cosmiconfig": "^8.1.3",
