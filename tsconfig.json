@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2016",
     "useDefineForClassFields": true,
-    "module": "esnext",
+    "module": "Node16",
     "moduleResolution": "node16",
     "isolatedModules": true,
     "strict": true,
