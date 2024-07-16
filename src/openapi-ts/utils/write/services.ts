@@ -7,7 +7,6 @@ import type {
   TypeScriptFile,
 } from "../../compiler";
 import { compiler } from "../../compiler";
-import type { ObjectValue } from "../../compiler/types";
 import type {
   Model,
   Operation,
@@ -151,7 +150,9 @@ const toOperationReturnType = (client: Client, operation: Operation) => {
     returnType = compiler.typedef.union([importedType]);
   }
 
-  returnType = compiler.typedef.basic("CancelablePromise", [returnType]);
+  returnType = compiler.typedef.basic("Promise", [
+    compiler.typedef.basic("AxiosResponse", [returnType]),
+  ]);
   return returnType;
 };
 
@@ -213,8 +214,7 @@ const toOperationComment = (operation: Operation): Comments => {
 const toRequestOptions = (
   client: Client,
   operation: Operation,
-  onImport: OnImport,
-  onClientImport: OnImport | undefined
+  onImport: OnImport
 ) => {
   const config = getConfig();
 
@@ -230,58 +230,6 @@ const toRequestOptions = (
 
   if (responseTransformerName) {
     onImport(responseTransformerName);
-  }
-
-  if (isStandaloneClient(config)) {
-    let obj: ObjectValue[] = [
-      {
-        spread: "options",
-      },
-    ];
-
-    const bodyParameters = operation.parameters.filter(
-      (parameter) => parameter.in === "body" || parameter.in === "formData"
-    );
-    const contents = bodyParameters
-      .map((parameter) => parameter.mediaType)
-      .filter(Boolean)
-      .filter(unique);
-    if (contents.length === 1 && contents[0] === "multipart/form-data") {
-      obj = [
-        ...obj,
-        {
-          spread: "formDataBodySerializer",
-        },
-      ];
-      onClientImport?.("formDataBodySerializer");
-    }
-
-    // TODO: set parseAs to skip inference if every result has the same
-    // content type. currently impossible because successes do not contain
-    // header information
-
-    obj = [
-      ...obj,
-      {
-        key: "url",
-        value: operation.path,
-      },
-    ];
-
-    if (responseTransformerName) {
-      obj = [
-        ...obj,
-        {
-          key: "responseTransformer",
-          value: responseTransformerName,
-        },
-      ];
-    }
-
-    return compiler.types.object({
-      identifiers: ["responseTransformer"],
-      obj,
-    });
   }
 
   const toObj = (parameters: OperationParameter[]) =>
@@ -381,77 +329,14 @@ const toRequestOptions = (
 const toOperationStatements = (
   client: Client,
   operation: Operation,
-  onImport: OnImport,
-  onClientImport?: OnImport
+  onImport: OnImport
 ) => {
-  const config = getConfig();
-
-  const options = toRequestOptions(client, operation, onImport, onClientImport);
-
-  if (isStandaloneClient(config)) {
-    const errorType = setUniqueTypeName({
-      client,
-      meta: {
-        // TODO: this should be exact ref to operation for consistency,
-        // but name should work too as operation ID is unique
-        $ref: operation.name,
-        name: operation.name,
-      },
-      nameTransformer: operationErrorTypeName,
-    }).name;
-    const successResponses = operation.responses.filter((response) =>
-      response.responseTypes.includes("success")
-    );
-    const responseType = successResponses.length
-      ? setUniqueTypeName({
-          client,
-          meta: {
-            // TODO: this should be exact ref to operation for consistency,
-            // but name should work too as operation ID is unique
-            $ref: operation.name,
-            name: operation.name,
-          },
-          nameTransformer: operationResponseTypeName,
-        }).name
-      : "void";
-    return [
-      compiler.return.functionCall({
-        args: [options],
-        name: `(options?.client ?? client).${operation.method.toLocaleLowerCase()}`,
-        types:
-          errorType && responseType
-            ? [responseType, errorType]
-            : errorType
-            ? ["unknown", errorType]
-            : responseType
-            ? [responseType]
-            : [],
-      }),
-    ];
-  }
-
-  if (config.name) {
-    return [
-      compiler.return.functionCall({
-        args: [options],
-        name: "this.httpRequest.request",
-      }),
-    ];
-  }
-
-  if (config.client === "angular") {
-    return [
-      compiler.return.functionCall({
-        args: ["OpenAPI", "this.http", options],
-        name: "__request",
-      }),
-    ];
-  }
+  const options = toRequestOptions(client, operation, onImport);
 
   return [
     compiler.return.functionCall({
-      args: ["OpenAPI", options],
-      name: "__request",
+      args: [options],
+      name: `request`,
     }),
   ];
 };
@@ -460,11 +345,8 @@ export const processService = (
   client: Client,
   service: Service,
   onNode: OnNode,
-  onImport: OnImport,
-  onClientImport: OnImport
+  onImport: OnImport
 ) => {
-  const config = getConfig();
-
   service.operations.forEach((operation) => {
     if (operation.parameters.length) {
       generateImport({
@@ -502,12 +384,7 @@ export const processService = (
     const expression = compiler.types.function({
       parameters: toOperationParamType(client, operation),
       returnType: toOperationReturnType(client, operation),
-      statements: toOperationStatements(
-        client,
-        operation,
-        onImport,
-        onClientImport
-      ),
+      statements: toOperationStatements(client, operation, onImport),
     });
     const statement = compiler.export.const({
       comment: toOperationComment(operation),
@@ -536,7 +413,6 @@ export const processServices = async ({
 
   for (const service of client.services) {
     let imports: string[] = [];
-    let clientImports: string[] = [];
     const serviceFile = files.find((i) => i.serviceName === service.name)?.file;
     processService(
       client,
@@ -546,14 +422,13 @@ export const processServices = async ({
       },
       (imported) => {
         imports = [...imports, imported];
-      },
-      (imported) => {
-        clientImports = [...clientImports, imported];
       }
     );
     if (config.axiosInstPath) {
-      serviceFile?.addImport([{ name: "Axios" }], config.axiosInstPath);
+      serviceFile?.addImport([{ name: "request" }], config.axiosInstPath);
     }
+    serviceFile?.addImport([{ name: "AxiosResponse", asType: true }], "axios");
+
     // Import all models required by the services.
     if (type && !type.isEmpty()) {
       const importedTypes = imports.filter(unique).map((name) => ({

@@ -1,0 +1,23 @@
+{
+  "files.autoSave": "onFocusChange",
+  "files.autoSaveDelay": 1000,
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
+  },
+  "css.validate": false,
+  "scss.validate": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "eslint.validate": [
+    "vue",
+    "javascript",
+    "typescript",
+    "json",
+    "html",
+    "markdown"
+  ],
+  "stylelint.validate": ["vue", "scss", "css", "html"],
+  "commentTranslate.hover.enabled": true,
+  "commentTranslate.multiLineMerge": true
+}

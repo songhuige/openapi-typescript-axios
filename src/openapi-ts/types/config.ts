@@ -42,7 +42,7 @@ export interface ClientConfig {
   /**
    * The relative location of the OpenAPI spec
    */
-  input: string | Record<string, unknown>;
+  input: string;
   /**
    * Custom client class name
    * @deprecated

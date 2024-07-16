@@ -13,14 +13,14 @@ const __dirname = process.cwd();
 
 async function gen() {
   const options: GenConfig = {
-    axiosInstPath: "@/http/axios-instance.ts",
+    axiosInstPath: "@/http/axios-instance",
     services: [
       {
-        input: "http://192.168.5.162:45000/api/command/v2/api-docs",
+        input: "http://117.139.13.157:25031/api/command/v2/api-docs",
         output: "./src/http/command",
       },
       {
-        input: "http://192.168.5.162:45000/api/common/v2/api-docs",
+        input: "http://117.139.13.157:25031/api/common/v2/api-docs",
         output: "./src/http/common",
       },
     ],
@@ -44,7 +44,8 @@ async function gen() {
 
   for await (const option of clientOptions) {
     initConfigs(option);
-    const openApi = await getOpenApiSpec(option.output);
+
+    const openApi = await getOpenApiSpec(option.input);
     const client = postProcessClient(parse(openApi));
     await writeClient(openApi, client);
     await writeFileSync(

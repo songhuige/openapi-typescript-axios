@@ -3,7 +3,6 @@ node_modules
 dist
 
 # local env files
-.vscode/settings.json
 
 # Log files
 npm-debug.log*

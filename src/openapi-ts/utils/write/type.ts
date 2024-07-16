@@ -82,7 +82,13 @@ const typeUnion = (model: Model) => {
     .map((model) =>
       compiler.utils.toString({ node: toType(model), unescape: true })
     )
-    .filter(unique);
+    .filter(unique)
+    .filter((i) => i !== "unknown");
+
+  if (types.length === 0) {
+    types.push("unknown");
+  }
+
   return compiler.typedef.union(types, model.isNullable);
 };
 
