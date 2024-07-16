@@ -5,18 +5,18 @@ import type {
   FunctionParameter,
   Node,
   TypeScriptFile,
-} from "../../compiler";
-import { compiler } from "../../compiler";
+} from "../compiler";
+import { compiler } from "../compiler";
 import type {
   Model,
   Operation,
   OperationParameter,
   Service,
-} from "../../open-api";
-import type { Client } from "../../types/client";
-import { getConfig, isStandaloneClient } from "../config";
-import { escapeComment, escapeName } from "../escape";
-import { unique } from "../unique";
+} from "../open-api";
+import type { Client } from "../types/client";
+import { getConfig, isStandaloneClient } from "../utils/config";
+import { escapeComment, escapeName } from "../utils/escape";
+import { unique } from "../utils/unique";
 import { setUniqueTypeName } from "./type";
 
 type OnNode = (node: Node) => void;

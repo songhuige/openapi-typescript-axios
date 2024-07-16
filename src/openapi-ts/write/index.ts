@@ -1,5 +1,5 @@
-import type { TypeScriptFile } from "../../compiler";
-import { compiler } from "../../compiler";
+import type { TypeScriptFile } from "../compiler";
+import { compiler } from "../compiler";
 
 export const processIndex = async ({
   file,

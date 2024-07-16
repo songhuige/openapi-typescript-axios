@@ -1,11 +1,11 @@
 import ts from "typescript";
 
-import { compiler } from "../../compiler";
+import { compiler } from "../compiler";
 import type {
   ModelMeta,
   OperationResponse,
-} from "../../open-api/common/interfaces/client";
-import { getConfig } from "../config";
+} from "../open-api/common/interfaces/client";
+import { getConfig } from "../utils/config";
 import {
   modelResponseTransformerTypeName,
   operationResponseTransformerTypeName,

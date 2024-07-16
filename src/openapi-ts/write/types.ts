@@ -1,12 +1,12 @@
-import type { Comments, Node, TypeScriptFile } from "../../compiler";
-import { compiler } from "../../compiler";
-import type { Model, OperationParameter } from "../../open-api";
-import type { Method } from "../../open-api/common/interfaces/client";
-import type { Client } from "../../types/client";
-import { getConfig, isStandaloneClient } from "../config";
-import { enumEntry, enumUnionType } from "../enum";
-import { escapeComment } from "../escape";
-import { sortByName, sorterByName } from "../sort";
+import type { Comments, Node, TypeScriptFile } from "../compiler";
+import { compiler } from "../compiler";
+import type { Model, OperationParameter } from "../open-api";
+import type { Method } from "../open-api/common/interfaces/client";
+import type { Client } from "../types/client";
+import { getConfig, isStandaloneClient } from "../utils/config";
+import { enumEntry, enumUnionType } from "../utils/enum";
+import { escapeComment } from "../utils/escape";
+import { sortByName, sorterByName } from "../utils/sort";
 import {
   operationDataTypeName,
   operationErrorTypeName,

@@ -6,7 +6,7 @@ import type { UserConfig } from "./openapi-ts/types/config";
 import { getOutputPath } from "./openapi-ts/utils/config";
 import { getOpenApiSpec } from "./openapi-ts/utils/getOpenApiSpec";
 import { postProcessClient } from "./openapi-ts/utils/postprocess";
-import { writeClient } from "./openapi-ts/utils/write/client";
+import { writeClient } from "./openapi-ts/write/client";
 import type { GenConfig } from "./types/config";
 
 const __dirname = process.cwd();
