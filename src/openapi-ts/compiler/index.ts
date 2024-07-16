@@ -177,6 +177,7 @@ export const compiler = {
     array: types.createArrayType,
     enum: types.createEnumDeclaration,
     function: types.createFunction,
+    functionDeclaration: types.createDeclarationFunction,
     object: types.createObjectType,
   },
   utils: {

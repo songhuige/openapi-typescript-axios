@@ -2,6 +2,8 @@ import { cosmiconfig } from "cosmiconfig";
 import { TypeScriptLoader } from "cosmiconfig-typescript-loader";
 import { ESLint } from "eslint";
 
+import type { GenConfig } from "./types/config";
+
 const eslint = new ESLint({ fix: true });
 
 export async function startLint(...paths: string[]) {
@@ -10,7 +12,7 @@ export async function startLint(...paths: string[]) {
 }
 
 export interface LoadConfigResult {
-  config: OpenAPIConfig;
+  config: GenConfig;
   filepath: string;
   isEmpty?: boolean;
 }

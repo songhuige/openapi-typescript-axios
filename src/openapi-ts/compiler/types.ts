@@ -136,6 +136,36 @@ export const createFunction = ({
   return expression;
 };
 
+export const createDeclarationFunction = ({
+  comment,
+  multiLine,
+  parameters = [],
+  returnType,
+  statements = [],
+  name,
+}: {
+  comment?: Comments;
+  multiLine?: boolean;
+  parameters?: FunctionParameter[];
+  returnType?: string | ts.TypeNode;
+  statements?: ts.Statement[];
+  name: string;
+}) => {
+  const expression = ts.factory.createFunctionDeclaration(
+    [ts.factory.createModifier(ts.SyntaxKind.ExportKeyword)],
+    undefined,
+    name,
+    undefined,
+    toParameterDeclarations(parameters),
+    returnType ? createTypeNode(returnType) : undefined,
+    ts.factory.createBlock(statements, multiLine)
+  );
+  if (comment) {
+    addLeadingJSDocComment(expression, comment);
+  }
+  return expression;
+};
+
 /**
  * Create Array type expression.
  * @param arr - The array to create.

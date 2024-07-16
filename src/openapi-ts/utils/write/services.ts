@@ -381,17 +381,14 @@ export const processService = (
   });
 
   service.operations.forEach((operation) => {
-    const expression = compiler.types.function({
+    const expression = compiler.types.functionDeclaration({
+      name: operation.name,
       parameters: toOperationParamType(client, operation),
       returnType: toOperationReturnType(client, operation),
       statements: toOperationStatements(client, operation, onImport),
-    });
-    const statement = compiler.export.const({
       comment: toOperationComment(operation),
-      expression,
-      name: operation.name,
     });
-    onNode(statement);
+    onNode(expression);
   });
   return;
 };
