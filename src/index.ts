@@ -1,80 +1,62 @@
-import * as fs from "fs";
-import openapiTS from "openapi-typescript";
-import path from "path";
+import { writeFileSync } from "fs";
 
-import { loadConfig, startLint } from "./utils.js";
+import { initConfigs } from "./openapi-ts";
+import { parse } from "./openapi-ts/open-api";
+import type { UserConfig } from "./openapi-ts/types/config";
+import { getOutputPath } from "./openapi-ts/utils/config";
+import { getOpenApiSpec } from "./openapi-ts/utils/getOpenApiSpec";
+import { postProcessClient } from "./openapi-ts/utils/postprocess";
+import { writeClient } from "./openapi-ts/utils/write/client";
+import type { GenConfig } from "./types/config";
 
 const __dirname = process.cwd();
 
 async function gen() {
-  const config = await loadConfig();
+  const options: GenConfig = {
+    axiosInstPath: "@/http/axios-instance.ts",
+    services: [
+      {
+        input: "http://192.168.5.162:45000/api/command/v2/api-docs",
+        output: "./src/http/command",
+      },
+      {
+        input: "http://192.168.5.162:45000/api/common/v2/api-docs",
+        output: "./src/http/common",
+      },
+    ],
+  };
 
-  if (config === null || config.isEmpty) {
-    console.log("请先配置'openapi-gen'文件");
-    return;
-  }
-
-  const { services, openApiConfig = {} } = config.config;
-
-  services.forEach(async ({ name, url }) => {
-    const output = await openapiTS(url, openApiConfig).catch(console.log);
-    if (output) {
-      const filePath = path.join(__dirname, `./schema/${name}.ts`);
-      if (!fs.existsSync(path.join(__dirname, `./schema`))) {
-        fs.mkdirSync(path.join(__dirname, `./schema`));
-      }
-      fs.writeFileSync(filePath, apifoxFix(output));
-      console.log(`ts: ${filePath}`);
-      await startLint(filePath);
-      await genSchemaWrapper(name);
-    }
+  const clientOptions: UserConfig[] = options.services.map((service) => {
+    const axiosInstPath = options.axiosInstPath || service.axiosInstPath || "";
+    return {
+      axiosInstPath: axiosInstPath,
+      input: service.input,
+      output: {
+        lint: "eslint",
+        format: "prettier",
+        path: service.output,
+      },
+      services: {
+        asClass: true,
+      },
+    };
   });
-}
 
-function apifoxFix(output: string) {
-  output = output.replaceAll("%C2%AB", "«");
-  output = output.replaceAll("%C2%BB", "»");
-  return output;
-}
-
-async function genSchemaWrapper(module: string) {
-  const camelCase = `${module.substring(0, 1).toUpperCase()}${module.substring(
-    1
-  )}`;
-  const text = `import type { paths } from "./${module}";
-
-type P1 = keyof paths;
-
-type M1<P extends P1> = APIMethod<paths, P>;
-
-type S1<P extends P1, M extends M1<P>> = APIStates<paths, P, M>;
-
-export type ${camelCase}API<
-  P extends P1,
-  M extends M1<P> = any,
-  S extends S1<P, M> = any
-> = API<paths, P, M, S>;
-
-export type ${camelCase}Param<P extends P1, M extends M1<P> = any> = RequestParam<
-  paths,
-  P,
-  M
->;
-
-export type ${camelCase}Response<
-  P extends P1,
-  M extends M1<P> = any,
-  S extends S1<P, M> = any
-> = ResponseBody<paths, P, M, S>;
-`;
-
-  const fileName = `./schema/${module}-wrapper.ts`;
-  const filePath = path.join(__dirname, fileName);
-  fs.writeFileSync(filePath, text);
-  console.log(`dts: ${fileName}`);
-  await startLint(filePath);
+  for await (const option of clientOptions) {
+    initConfigs(option);
+    const openApi = await getOpenApiSpec(option.output);
+    const client = postProcessClient(parse(openApi));
+    await writeClient(openApi, client);
+    await writeFileSync(
+      `${getOutputPath(option.output)}/client.json`,
+      JSON.stringify(client, null, 2),
+      "utf-8"
+    );
+  }
 }
 
 export function main() {
   gen();
 }
+
+main();
