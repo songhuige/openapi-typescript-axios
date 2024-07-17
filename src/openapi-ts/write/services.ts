@@ -166,45 +166,44 @@ const toOperationComment = (operation: Operation): Comments => {
     return comment;
   }
 
-  let params: string[] = [];
+  // let params: string[] = [];
 
-  if (operation.parameters.length) {
-    if (config.useOptions) {
-      params = [
-        "@param data The data for the request.",
-        ...operation.parameters.map(
-          (parameter) =>
-            `@param data.${parameter.name} ${
-              parameter.description ? escapeComment(parameter.description) : ""
-            }`
-        ),
-      ];
-    } else {
-      params = operation.parameters.map(
-        (parameter) =>
-          `@param ${parameter.name} ${
-            parameter.description ? escapeComment(parameter.description) : ""
-          }`
-      );
-    }
-  }
+  // if (operation.parameters.length) {
+  //   if (config.useOptions) {
+  //     params = [
+  //       "@param data The data for the request.",
+  //       ...operation.parameters.map(
+  //         (parameter) =>
+  //           `@param data.${parameter.name} ${
+  //             parameter.description ? escapeComment(parameter.description) : ""
+  //           }`
+  //       ),
+  //     ];
+  //   } else {
+  //     params = operation.parameters.map(
+  //       (parameter) =>
+  //         `@param ${parameter.name} ${
+  //           parameter.description ? escapeComment(parameter.description) : ""
+  //         }`
+  //     );
+  //   }
+  // }
 
-  const successResponses = operation.responses.filter((response) =>
-    response.responseTypes.includes("success")
-  );
+  // const successResponses = operation.responses.filter((response) =>
+  //   response.responseTypes.includes("success")
+  // );
 
   const comment = [
     operation.deprecated && "@deprecated",
     operation.summary && escapeComment(operation.summary),
     operation.description && escapeComment(operation.description),
-    ...params,
-    ...successResponses.map(
-      (response) =>
-        `@returns ${response.type} ${
-          response.description ? escapeComment(response.description) : ""
-        }`
-    ),
-    "@throws ApiError",
+    // ...params,
+    // ...successResponses.map(
+    //   (response) =>
+    //     `@returns ${response.type} ${
+    //       response.description ? escapeComment(response.description) : ""
+    //     }`
+    // ),
   ];
   return comment;
 };
@@ -298,16 +297,16 @@ const toRequestOptions = (
     obj.responseTransformer = responseTransformerName;
   }
 
-  const errorResponses = operation.responses.filter((response) =>
-    response.responseTypes.includes("error")
-  );
-  if (errorResponses.length > 0) {
-    const errors: Record<number | string, string> = {};
-    errorResponses.forEach((response) => {
-      errors[response.code] = response.description ?? "";
-    });
-    obj.errors = errors;
-  }
+  // const errorResponses = operation.responses.filter((response) =>
+  //   response.responseTypes.includes("error")
+  // );
+  // if (errorResponses.length > 0) {
+  //   const errors: Record<number | string, string> = {};
+  //   errorResponses.forEach((response) => {
+  //     errors[response.code] = response.description ?? "";
+  //   });
+  //   obj.errors = errors;
+  // }
 
   return compiler.types.object({
     identifiers: [

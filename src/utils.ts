@@ -59,16 +59,23 @@ export function toPascalCase(str: string) {
 
 // 将url的path部分转大驼峰
 export function toPascalCasePath(str: string) {
-  return str
+  str = str
     .split("/")
     .filter((i) => !!i)
-    .map((path) => toPascalCase(path))
+    .map((path) => camelCase(path))
     .map((path) => replaceNonIdentifier(path))
     .filter((i) => !!i)
-    .join("");
+    .join("_");
+
+  return capitalizeFirstLetter(str);
 }
 
 // 替换掉除标识符以外的字符
 export function replaceNonIdentifier(str: string) {
-  return str.replace(/[^a-zA-Z0-9_]/g, "");
+  return str.replace(/[^a-zA-Z0-9_]/g, "$");
+}
+
+// 首字母大写
+export function capitalizeFirstLetter(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
