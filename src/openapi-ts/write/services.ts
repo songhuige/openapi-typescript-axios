@@ -125,8 +125,6 @@ const toOperationParamType = (
 };
 
 const toOperationReturnType = (client: Client, operation: Operation) => {
-  const config = getConfig();
-
   let returnType = compiler.typedef.basic("void");
 
   const successResponses = operation.responses.filter((response) =>
@@ -347,6 +345,7 @@ export const processService = (
   onNode: OnNode,
   onImport: OnImport
 ) => {
+  const config = getConfig();
   service.operations.forEach((operation) => {
     if (operation.parameters.length) {
       generateImport({
@@ -380,9 +379,11 @@ export const processService = (
     }
   });
 
+  const methodNameBuilder = config.services.methodNameBuilder;
+
   service.operations.forEach((operation) => {
     const expression = compiler.types.functionDeclaration({
-      name: operation.name,
+      name: methodNameBuilder?.(operation) ?? operation.name,
       parameters: toOperationParamType(client, operation),
       returnType: toOperationReturnType(client, operation),
       statements: toOperationStatements(client, operation, onImport),

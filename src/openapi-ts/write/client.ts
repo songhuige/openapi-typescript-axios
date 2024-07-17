@@ -21,7 +21,7 @@ export const writeClient = async (
   openApi: OpenApi,
   client: Client
   // templates: Templates
-): Promise<void> => {
+): Promise<TypeScriptFile[]> => {
   const config = getConfig();
 
   if (config.services.include && config.services.asClass) {
@@ -56,7 +56,7 @@ export const writeClient = async (
         serviceName: service.name,
         file: new TypeScriptFile({
           dir: config.output.path,
-          name: `${service.name}Services.ts`,
+          name: `${service.name}.server.ts`,
         }),
       };
     }),
@@ -100,4 +100,10 @@ export const writeClient = async (
   });
   files.types?.write("\n\n");
   files.index.write();
+
+  const _files = files.services
+    .map((service) => service.file)
+    .concat(files.types, files.index);
+
+  return _files;
 };

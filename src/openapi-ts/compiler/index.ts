@@ -1,4 +1,3 @@
-import type { PathLike } from "node:fs";
 import { rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
@@ -34,7 +33,7 @@ export class TypeScriptFile {
   private _imports: Array<ts.Node> = [];
   private _items: Array<ts.Node | string> = [];
   private _name: string;
-  private _path: PathLike;
+  private _path: string;
 
   public constructor({
     dir,
@@ -91,7 +90,7 @@ export class TypeScriptFile {
     }
 
     const { extension, name } = splitNameAndExtension(fileName);
-    return [name, "gen", extension].filter(Boolean).join(".");
+    return [name, extension].filter(Boolean).join(".");
   }
 
   public toString(seperator = "\n") {
@@ -122,6 +121,10 @@ export class TypeScriptFile {
       return;
     }
     writeFileSync(this._path, this.toString(seperator));
+  }
+
+  public getPath() {
+    return this._path;
   }
 }
 

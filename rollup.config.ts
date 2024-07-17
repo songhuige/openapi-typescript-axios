@@ -22,6 +22,7 @@ const config = defineConfig({
     typescript({
       declaration: false,
       tsconfig: path.resolve(__dirname, "./tsconfig.json"),
+      sourceMap: false,
     }),
   ],
 });

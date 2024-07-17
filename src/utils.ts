@@ -6,7 +6,7 @@ import type { GenConfig } from "./types/config";
 
 const eslint = new ESLint({ fix: true });
 
-export async function startLint(...paths: string[]) {
+export async function startLint(paths: string[]) {
   const results = await eslint.lintFiles(paths);
   await ESLint.outputFixes(results);
 }
@@ -45,4 +45,30 @@ export async function loadConfig(): Promise<LoadConfigResult | null> {
   });
 
   return await explorer.search(process.cwd());
+}
+
+export function camelCase(str: string) {
+  return str.replace(/-(\w)/g, (_, c) => (c ? c.toUpperCase() : ""));
+}
+
+export function toPascalCase(str: string) {
+  return str.replace(/(^\w)|-(\w)/g, (m, p1, p2) =>
+    p1 ? p1.toUpperCase() : p2 ? p2.toUpperCase() : ""
+  );
+}
+
+// 将url的path部分转大驼峰
+export function toPascalCasePath(str: string) {
+  return str
+    .split("/")
+    .filter((i) => !!i)
+    .map((path) => toPascalCase(path))
+    .map((path) => replaceNonIdentifier(path))
+    .filter((i) => !!i)
+    .join("");
+}
+
+// 替换掉除标识符以外的字符
+export function replaceNonIdentifier(str: string) {
+  return str.replace(/[^a-zA-Z0-9_]/g, "");
 }

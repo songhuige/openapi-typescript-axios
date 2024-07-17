@@ -1,15 +1,13 @@
-import { writeFileSync } from "fs";
-
 import { initConfigs } from "./openapi-ts";
 import { parse } from "./openapi-ts/open-api";
 import type { UserConfig } from "./openapi-ts/types/config";
-import { getOutputPath } from "./openapi-ts/utils/config";
 import { getOpenApiSpec } from "./openapi-ts/utils/getOpenApiSpec";
 import { postProcessClient } from "./openapi-ts/utils/postprocess";
 import { writeClient } from "./openapi-ts/write/client";
 import type { GenConfig } from "./types/config";
+import { startLint, toPascalCasePath } from "./utils";
 
-const __dirname = process.cwd();
+// const __dirname = process.cwd();
 
 async function gen() {
   const options: GenConfig = {
@@ -38,21 +36,26 @@ async function gen() {
       },
       services: {
         asClass: true,
+        methodNameBuilder(operation) {
+          const { method, path } = operation;
+          return `${method.toLowerCase()}${toPascalCasePath(path)}`;
+        },
       },
     };
   });
 
   for await (const option of clientOptions) {
     initConfigs(option);
-
+    console.log("正在生成schema ts文件...");
     const openApi = await getOpenApiSpec(option.input);
+    console.log("生成schema ts文件完成...");
+    console.log("正在生成http client文件...");
     const client = postProcessClient(parse(openApi));
-    await writeClient(openApi, client);
-    await writeFileSync(
-      `${getOutputPath(option.output)}/client.json`,
-      JSON.stringify(client, null, 2),
-      "utf-8"
-    );
+    const files = await writeClient(openApi, client);
+    console.log("生成http client文件完成...");
+    console.log("正在格式化代码...");
+    await startLint(files.map((i) => i.getPath()));
+    console.log("已完成格式化...");
   }
 }
 
