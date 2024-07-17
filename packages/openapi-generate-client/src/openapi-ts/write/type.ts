@@ -1,6 +1,6 @@
 import { compiler, type Property, type TypeNode } from "../compiler";
-import type { Model } from "../open-api";
-import { transformTypeKeyName } from "../open-api/common/parser/type";
+import type { Model } from "../../../../openapi-parse/src";
+import { transformTypeKeyName } from "../../../../openapi-parse/src/common/parser/type";
 import type { Client } from "../types/client";
 import { getConfig, isStandaloneClient } from "../utils/config";
 import { enumValue } from "../utils/enum";

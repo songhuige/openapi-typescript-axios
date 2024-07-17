@@ -5,7 +5,7 @@ import { loadConfig } from "c12";
 import type { ClientConfig, Config, UserConfig } from "./types/config";
 import { isStandaloneClient, setConfig } from "./utils/config";
 
-export * from "./open-api";
+export * from "../../../openapi-parse/src";
 
 const getOutput = (userConfig: ClientConfig): Config["output"] => {
   let output: Config["output"] = {

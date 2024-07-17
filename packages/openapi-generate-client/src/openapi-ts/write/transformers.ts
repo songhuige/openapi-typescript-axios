@@ -4,7 +4,7 @@ import { compiler } from "../compiler";
 import type {
   ModelMeta,
   OperationResponse,
-} from "../open-api/common/interfaces/client";
+} from "../../../../openapi-parse/src/common/interfaces/client";
 import { getConfig } from "../utils/config";
 import {
   modelResponseTransformerTypeName,

@@ -1,4 +1,4 @@
-import type { Model, Operation, Service } from "../open-api";
+import type { Model, Operation, Service } from "../../../../openapi-parse/src";
 import type { Client } from "../types/client";
 import { sort } from "./sort";
 import { unique } from "./unique";

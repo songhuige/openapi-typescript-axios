@@ -1,5 +1,5 @@
-import type { Enum, Model } from "../open-api";
-import { ensureValidTypeScriptJavaScriptIdentifier } from "../open-api/common/parser/sanitize";
+import type { Enum, Model } from "../../../../openapi-parse/src";
+import { ensureValidTypeScriptJavaScriptIdentifier } from "../../../../openapi-parse/src/common/parser/sanitize";
 import { unescapeName } from "./escape";
 import { sort } from "./sort";
 import { unique } from "./unique";

@@ -12,7 +12,7 @@ import type {
   Operation,
   OperationParameter,
   Service,
-} from "../open-api";
+} from "../../../../openapi-parse/src";
 import type { Client } from "../types/client";
 import { getConfig, isStandaloneClient } from "../utils/config";
 import { escapeComment, escapeName } from "../utils/escape";

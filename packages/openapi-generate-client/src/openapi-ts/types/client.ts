@@ -1,5 +1,5 @@
-import type { Model, Service } from "../open-api";
-import type { ModelMeta } from "../open-api/common/interfaces/client";
+import type { Model, Service } from "../../../../openapi-parse/src";
+import type { ModelMeta } from "../../../../openapi-parse/src/common/interfaces/client";
 
 export interface Client {
   models: Model[];

@@ -1,4 +1,4 @@
-import type { Operation } from "../open-api";
+import type { Operation } from "../../../../openapi-parse/src";
 
 export interface ClientConfig {
   axiosInstPath: string;

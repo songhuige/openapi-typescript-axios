@@ -1,7 +1,7 @@
 import type { Comments, Node, TypeScriptFile } from "../compiler";
 import { compiler } from "../compiler";
-import type { Model, OperationParameter } from "../open-api";
-import type { Method } from "../open-api/common/interfaces/client";
+import type { Model, OperationParameter } from "../../../../openapi-parse/src";
+import type { Method } from "../../../../openapi-parse/src/common/interfaces/client";
 import type { Client } from "../types/client";
 import { getConfig, isStandaloneClient } from "../utils/config";
 import { enumEntry, enumUnionType } from "../utils/enum";

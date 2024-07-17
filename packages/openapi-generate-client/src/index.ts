@@ -1,7 +1,6 @@
+import { parse } from "../../openapi-parse/src";
 import { initConfigs } from "./openapi-ts";
-import { parse } from "./openapi-ts/open-api";
 import type { UserConfig } from "./openapi-ts/types/config";
-import { getOpenApiSpec } from "./openapi-ts/utils/getOpenApiSpec";
 import { postProcessClient } from "./openapi-ts/utils/postprocess";
 import { writeClient } from "./openapi-ts/write/client";
 import type { GenConfig } from "./types/config";
@@ -40,9 +39,6 @@ async function gen() {
 
   for await (const option of clientOptions) {
     initConfigs(option);
-    console.log("正在生成schema ts文件...");
-    const openApi = await getOpenApiSpec(option.input);
-    console.log("生成schema ts文件完成...");
     console.log("正在生成http client文件...");
     const client = postProcessClient(parse(openApi));
     const files = await writeClient(openApi, client);

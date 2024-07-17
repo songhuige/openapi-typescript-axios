@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { TypeScriptFile } from "../compiler";
 import { compiler } from "../compiler";
-import type { OpenApi } from "../open-api";
-import { ensureValidTypeScriptJavaScriptIdentifier } from "../open-api/common/parser/sanitize";
+import type { OpenApi } from "../../../../openapi-parse/src";
+import { ensureValidTypeScriptJavaScriptIdentifier } from "../../../../openapi-parse/src/common/parser/sanitize";
 import { getConfig } from "../utils/config";
 
 const ensureValidSchemaOutput = (schema: unknown): object => {

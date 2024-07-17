@@ -15,11 +15,7 @@
   },
   "scripts": {
     "build": "rollup --config rollup.config.ts  --configPlugin typescript",
-    "dev": "yarn build --watch",
-    "postinstall": "husky install"
-  },
-  "engines": {
-    "node": "^18.0.0 || >=20.0.0"
+    "dev": "yarn build --watch"
   },
   "devDependencies": {},
   "peerDependencies": {},
