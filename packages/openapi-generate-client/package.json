@@ -1,0 +1,27 @@
+{
+  "name": "openapi-generate-client",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "liusonghui <itessay@163.com>",
+  "license": "MIT",
+  "packageManager": "yarn@1.22.5",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "types": "index.d.ts",
+  "bin": {
+    "openapi-typescript-gen": "./dist/openapi-typescript-gen.cjs"
+  },
+  "scripts": {
+    "build": "rollup --config rollup.config.ts  --configPlugin typescript",
+    "dev": "yarn build --watch",
+    "postinstall": "husky install"
+  },
+  "engines": {
+    "node": "^18.0.0 || >=20.0.0"
+  },
+  "devDependencies": {},
+  "peerDependencies": {},
+  "dependencies": {}
+}

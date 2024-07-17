@@ -1,11 +1,15 @@
 {
   "name": "openapi-typescript-gen",
   "version": "1.0.0",
+  "private": true,
   "main": "index.js",
   "author": "liusonghui <itessay@163.com>",
   "license": "MIT",
   "packageManager": "yarn@1.22.5",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "files": [
     "dist"
   ],
@@ -34,8 +38,6 @@
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "axios": "^1.7.2",
-    "c12": "^1.11.1",
-    "cosmiconfig": "^8.1.3",
     "cosmiconfig-typescript-loader": "^4.3.0",
     "eslint": "^8.40.0",
     "eslint-config-prettier": "^8.8.0",
