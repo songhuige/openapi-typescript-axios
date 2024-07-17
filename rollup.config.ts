@@ -5,24 +5,20 @@ import { defineConfig } from "rollup";
 const __dirname = process.cwd();
 
 const config = defineConfig({
-  input: "src/index.ts",
+  input: "src/node.ts",
   output: [
     {
-      file: "dist/index.js",
-      format: "module",
-      sourcemap: false,
-    },
-    {
-      file: "dist/index.cjs",
+      file: "dist/openapi-typescript-gen.cjs",
       format: "cjs",
       sourcemap: false,
     },
   ],
   plugins: [
     typescript({
-      declaration: false,
+      declaration: true,
       tsconfig: path.resolve(__dirname, "./tsconfig.json"),
       sourceMap: false,
+      declarationDir: path.resolve(__dirname, "./dist"),
     }),
   ],
 });

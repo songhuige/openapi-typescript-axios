@@ -1,0 +1,3 @@
+import { generateSchema } from ".";
+
+generateSchema();

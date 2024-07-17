@@ -5,24 +5,18 @@ import { getOpenApiSpec } from "./openapi-ts/utils/getOpenApiSpec";
 import { postProcessClient } from "./openapi-ts/utils/postprocess";
 import { writeClient } from "./openapi-ts/write/client";
 import type { GenConfig } from "./types/config";
-import { startLint, toPascalCasePath } from "./utils";
+import { loadConfig, startLint, toPascalCasePath } from "./utils";
 
 // const __dirname = process.cwd();
 
 async function gen() {
-  const options: GenConfig = {
-    axiosInstPath: "@/http/axios-instance",
-    services: [
-      {
-        input: "http://117.139.13.157:25031/api/command/v2/api-docs",
-        output: "./src/http/command",
-      },
-      {
-        input: "http://117.139.13.157:25031/api/common/v2/api-docs",
-        output: "./src/http/common",
-      },
-    ],
-  };
+  const config = await loadConfig();
+  if (!config || config?.isEmpty) {
+    console.error("Error：未找到配置文件，使用默认配置");
+    process.exit();
+  }
+
+  const options: GenConfig = config!.config;
 
   const clientOptions: UserConfig[] = options.services.map((service) => {
     const axiosInstPath = options.axiosInstPath || service.axiosInstPath || "";
@@ -59,8 +53,10 @@ async function gen() {
   }
 }
 
-export function main() {
+export function generateSchema() {
   gen();
 }
 
-main();
+export function defineConfig(option: GenConfig) {
+  return option;
+}
