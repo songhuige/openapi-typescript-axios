@@ -1,5 +1,6 @@
 import camelcase from "camelcase";
 import type {
+  Client,
   Model,
   Operation,
   OperationParameter,
@@ -14,7 +15,6 @@ import type {
   TypeScriptFile,
 } from "../compiler";
 import { compiler } from "../compiler";
-import type { Client } from "../types/client";
 import { getConfig, isStandaloneClient } from "../utils/config";
 import { setUniqueTypeName } from "./type";
 

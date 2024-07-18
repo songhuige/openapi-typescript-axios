@@ -1,4 +1,4 @@
-import type { Operation } from "openapi-parse";
+import type { Client, OpenApi, Operation } from "openapi-parse";
 import { parse } from "openapi-parse";
 
 import { initConfigs } from "./openapi-ts";
@@ -33,12 +33,18 @@ async function gen() {
     };
   });
 
+  const clients: Array<{
+    client: Client;
+    openApi: OpenApi;
+  }> = [];
   for await (const option of clientOptions) {
     initConfigs(option);
     const { client, openApi } = await parse(option.input);
     const files = await writeClient(openApi, client);
     await startLint(files.map((i) => i.getPath()));
   }
+
+  return clients;
 }
 
 export function methodNameBuilder(operation: Operation) {

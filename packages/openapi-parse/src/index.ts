@@ -6,6 +6,7 @@ import type { Client } from "./types/client";
 import { getOpenApiSpec } from "./utils/getOpenApiSpec";
 
 export type * from "./common/interfaces";
+export * from "./types/client";
 export * from "@/utils";
 
 /**
