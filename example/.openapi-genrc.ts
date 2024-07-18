@@ -1,4 +1,6 @@
-const config = {
+import { defineConfig } from "openapi-generate-client";
+
+const config = defineConfig({
   axiosInstPath: "@/http/axios-instance",
   services: [
     {
@@ -10,6 +12,6 @@ const config = {
       output: "./http/common",
     },
   ],
-};
+});
 
 module.exports = config;

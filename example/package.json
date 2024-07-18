@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "dependencies": {
-    "openapi-generate-client": "*"
-  },
+  "dependencies": {},
   "scripts": {
     "generate-client": "openapi-gen-cli"
   }

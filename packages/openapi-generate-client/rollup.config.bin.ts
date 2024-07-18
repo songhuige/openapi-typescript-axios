@@ -5,16 +5,11 @@ import { defineConfig } from "rollup";
 const __dirname = process.cwd();
 
 const config = defineConfig({
-  input: "src/index.ts",
+  input: "src/node.ts",
   output: [
     {
-      file: "dist/index.cjs",
+      file: "dist/openapi-gen-cli.cjs",
       format: "cjs",
-      sourcemap: false,
-    },
-    {
-      file: "dist/index.js",
-      format: "module",
       sourcemap: false,
     },
   ],

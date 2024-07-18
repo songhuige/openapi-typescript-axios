@@ -1,9 +1,7 @@
 import path from "node:path";
 
-import { loadConfig } from "c12";
-
 import type { ClientConfig, Config, UserConfig } from "./types/config";
-import { isStandaloneClient, setConfig } from "./utils/config";
+import { setConfig } from "./utils/config";
 
 export * from "openapi-parse";
 
@@ -81,93 +79,53 @@ const getTypes = (userConfig: ClientConfig): Config["types"] => {
   return types;
 };
 
-export const initConfigs = async (
-  userConfig: UserConfig
-): Promise<Config[]> => {
-  let configurationFile: string | undefined = undefined;
-  if (userConfig.configFile) {
-    const parts = userConfig.configFile.split(".");
-    configurationFile = parts.slice(0, parts.length - 1).join(".");
+export const initConfigs = async (userConfig: UserConfig): Promise<Config> => {
+  const {
+    client = "fetch",
+    configFile = "",
+    debug = false,
+    dryRun = false,
+    input,
+    request,
+    axiosInstPath,
+  } = userConfig;
+
+  if (debug) {
+    console.warn("userConfig:", userConfig);
   }
 
-  const { config: configFromFile } = await loadConfig<UserConfig>({
-    configFile: configurationFile,
-    jitiOptions: {
-      esmResolve: true,
-    },
-    name: "openapi-ts",
-  });
+  const output = getOutput(userConfig);
 
-  const userConfigs: ClientConfig[] = Array.isArray(userConfig)
-    ? userConfig
-    : Array.isArray(configFromFile)
-    ? configFromFile.map((config) => ({
-        ...config,
-        ...userConfig,
-      }))
-    : [{ ...(configFromFile ?? {}), ...userConfig }];
+  if (!input) {
+    throw new Error(
+      "🚫 input not provided - provide path to OpenAPI specification"
+    );
+  }
 
-  return userConfigs.map((userConfig) => {
-    const {
-      base,
-      client = "fetch",
-      configFile = "",
-      debug = false,
-      dryRun = false,
-      exportCore = true,
-      input,
-      name,
-      request,
-      useOptions = true,
-      axiosInstPath,
-    } = userConfig;
+  if (!output.path) {
+    throw new Error(
+      "🚫 output not provided - provide path where we should generate your client"
+    );
+  }
 
-    if (debug) {
-      console.warn("userConfig:", userConfig);
-    }
+  const schemas = getSchemas(userConfig);
+  const services = getServices(userConfig);
+  const types = getTypes(userConfig);
 
-    const output = getOutput(userConfig);
+  output.path = path.resolve(process.cwd(), output.path);
 
-    if (!input) {
-      throw new Error(
-        "🚫 input not provided - provide path to OpenAPI specification"
-      );
-    }
-
-    if (!output.path) {
-      throw new Error(
-        "🚫 output not provided - provide path where we should generate your client"
-      );
-    }
-
-    if (!useOptions) {
-      console.warn(
-        "⚠️ Deprecation warning: useOptions set to false. This setting will be removed in future versions. Please migrate useOptions to true https://heyapi.vercel.app/openapi-ts/migrating.html#v0-27-38"
-      );
-    }
-
-    const schemas = getSchemas(userConfig);
-    const services = getServices(userConfig);
-    const types = getTypes(userConfig);
-
-    output.path = path.resolve(process.cwd(), output.path);
-
-    return setConfig({
-      axiosInstPath,
-      base,
-      client,
-      configFile,
-      debug,
-      dryRun,
-      exportCore: isStandaloneClient(client) ? false : exportCore,
-      input,
-      name,
-      output,
-      request,
-      schemas,
-      services,
-      types,
-      useOptions,
-    });
+  return setConfig({
+    axiosInstPath,
+    client,
+    configFile,
+    debug,
+    dryRun,
+    input,
+    output,
+    request,
+    schemas,
+    services,
+    types,
+    exportCore: false,
   });
 };

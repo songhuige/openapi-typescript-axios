@@ -1,3 +1,3 @@
-import { generateSchema } from ".";
+import { start } from ".";
 
-generateSchema();
+start();

@@ -12,6 +12,11 @@ const config = defineConfig({
       format: "cjs",
       sourcemap: false,
     },
+    {
+      file: "dist/index.js",
+      format: "module",
+      sourcemap: false,
+    },
   ],
   plugins: [
     typescript({

@@ -91,29 +91,6 @@ const toOperationParamType = (
     return [];
   }
 
-  const getDefaultPrintable = (
-    p: OperationParameter | Model
-  ): string | undefined => {
-    if (p.default === undefined) {
-      return undefined;
-    }
-    return JSON.stringify(p.default, null, 4);
-  };
-
-  // legacy configuration
-  if (!config.useOptions) {
-    return operation.parameters.map((p) => {
-      const typePath = `${importedType}['${p.name}']`;
-      return {
-        default: p?.default,
-        isRequired:
-          (!p.isRequired && !getDefaultPrintable(p) ? "?" : "") === "",
-        name: p.name,
-        type: typePath,
-      };
-    });
-  }
-
   return [
     {
       default: isRequired ? undefined : {},
@@ -165,29 +142,6 @@ const toOperationComment = (operation: Operation): Comments => {
     return comment;
   }
 
-  // let params: string[] = [];
-
-  // if (operation.parameters.length) {
-  //   if (config.useOptions) {
-  //     params = [
-  //       "@param data The data for the request.",
-  //       ...operation.parameters.map(
-  //         (parameter) =>
-  //           `@param data.${parameter.name} ${
-  //             parameter.description ? escapeComment(parameter.description) : ""
-  //           }`
-  //       ),
-  //     ];
-  //   } else {
-  //     params = operation.parameters.map(
-  //       (parameter) =>
-  //         `@param ${parameter.name} ${
-  //           parameter.description ? escapeComment(parameter.description) : ""
-  //         }`
-  //     );
-  //   }
-  // }
-
   // const successResponses = operation.responses.filter((response) =>
   //   response.responseTypes.includes("success")
   // );
@@ -212,8 +166,6 @@ const toRequestOptions = (
   operation: Operation,
   onImport: OnImport
 ) => {
-  const config = getConfig();
-
   const operationName = operationResponseTypeName(operation.name);
   const { name: responseTransformerName } = setUniqueTypeName({
     client,
@@ -231,7 +183,7 @@ const toRequestOptions = (
   const toObj = (parameters: OperationParameter[]) =>
     parameters.reduce((prev, curr) => {
       const key = curr.prop;
-      const value = config.useOptions ? `data.${curr.name}` : curr.name;
+      const value = `data.${curr.name}`;
       if (key === value) {
         prev[key] = key;
       } else if (escapeName(key) === key) {
@@ -269,18 +221,10 @@ const toRequestOptions = (
 
   if (operation.parametersBody) {
     if (operation.parametersBody.in === "formData") {
-      if (config.useOptions) {
-        obj.formData = `data.${operation.parametersBody.name}`;
-      } else {
-        obj.formData = operation.parametersBody.name;
-      }
+      obj.formData = `data.${operation.parametersBody.name}`;
     }
     if (operation.parametersBody.in === "body") {
-      if (config.useOptions) {
-        obj.body = `data.${operation.parametersBody.name}`;
-      } else {
-        obj.body = operation.parametersBody.name;
-      }
+      obj.body = `data.${operation.parametersBody.name}`;
     }
   }
 

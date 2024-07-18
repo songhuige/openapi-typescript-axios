@@ -44,11 +44,6 @@ export interface ClientConfig {
    */
   input: string;
   /**
-   * Custom client class name
-   * @deprecated
-   */
-  name?: string;
-  /**
    * The relative location of the output directory
    */
   output:
@@ -181,12 +176,6 @@ export interface ClientConfig {
          */
         name?: "PascalCase" | "preserve";
       };
-  /**
-   * Use options or arguments functions
-   * @deprecated
-   * @default true
-   */
-  useOptions?: boolean;
 }
 
 // export type UserConfig = ClientConfig | Array<ClientConfig>
@@ -196,7 +185,7 @@ export type Config = Omit<
   Required<ClientConfig>,
   "base" | "name" | "output" | "request" | "schemas" | "services" | "types"
 > &
-  Pick<ClientConfig, "base" | "name" | "request"> & {
+  Pick<ClientConfig, "request"> & {
     output: Extract<Required<ClientConfig>["output"], object>;
     schemas: Extract<Required<ClientConfig>["schemas"], object>;
     services: Extract<Required<ClientConfig>["services"], object>;

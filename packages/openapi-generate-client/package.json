@@ -1,20 +1,31 @@
 {
   "name": "openapi-generate-client",
   "version": "1.0.0",
-  "main": "index.js",
   "author": "liusonghui <itessay@163.com>",
   "license": "MIT",
   "packageManager": "yarn@1.22.5",
   "type": "module",
-  "files": [
-    "dist"
-  ],
-  "types": "index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "bin": {
     "openapi-gen-cli": "./dist/openapi-gen-cli.cjs"
   },
   "scripts": {
-    "build": "rollup --config rollup.config.ts  --configPlugin typescript",
+    "build": "yarn build-bin && yarn build-index",
+    "build-bin": "rollup --config rollup.config.bin.ts --configPlugin typescript",
+    "build-index": "yarn build-bundle && yarn build-types",
+    "build-bundle": "rollup --config rollup.config.ts --configPlugin typescript",
+    "build-types-roll": "rollup --config rollup.dts.config.ts --configPlugin typescript && rimraf temp",
+    "build-types-temp": "tsc --emitDeclarationOnly -p tsconfig.types.json && tsc-alias -p tsconfig.types.json",
+    "build-types": "npm run build-types-temp && npm run build-types-roll",
     "dev": "yarn build --watch"
   },
   "devDependencies": {},
