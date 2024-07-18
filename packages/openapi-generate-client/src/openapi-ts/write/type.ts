@@ -1,4 +1,4 @@
-import type { Model } from "openapi-parse";
+import type { Client, Model } from "openapi-parse";
 import {
   enumValue,
   escapeComment,
@@ -9,7 +9,6 @@ import {
 } from "openapi-parse";
 
 import { compiler, type Property, type TypeNode } from "../compiler";
-import type { Client } from "../types/client";
 import { getConfig, isStandaloneClient } from "../utils/config";
 
 const base = (model: Model) => {

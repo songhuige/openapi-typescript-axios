@@ -1,10 +1,9 @@
 import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 
-import type { OpenApi } from "openapi-parse";
+import type { Client, OpenApi } from "openapi-parse";
 
 import { TypeScriptFile } from "../compiler";
-import type { Client } from "../types/client";
 import { getConfig } from "../utils/config";
 // import type { Templates } from "../handlebars";
 import { processIndex } from "./index";

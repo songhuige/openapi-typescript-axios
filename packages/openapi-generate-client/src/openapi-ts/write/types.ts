@@ -1,4 +1,4 @@
-import type { Method, Model, OperationParameter } from "openapi-parse";
+import type { Client, Method, Model, OperationParameter } from "openapi-parse";
 import {
   enumEntry,
   enumUnionType,
@@ -9,7 +9,6 @@ import {
 
 import type { Comments, Node, TypeScriptFile } from "../compiler";
 import { compiler } from "../compiler";
-import type { Client } from "../types/client";
 import { getConfig, isStandaloneClient } from "../utils/config";
 import {
   operationDataTypeName,

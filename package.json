@@ -12,6 +12,9 @@
     "example"
   ],
   "scripts": {
+    "build-openapi-parse": "yarn workspace openapi-parse build",
+    "build-generate-client": "yarn workspace openapi-generate-client build",
+    "build": "yarn build-openapi-parse && yarn build-generate-client",
     "lint": "eslint **/*.{ts,js,json,md}",
     "lint:fix": "yarn lint --fix",
     "format": "prettier . --write",

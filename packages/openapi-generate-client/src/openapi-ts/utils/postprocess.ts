@@ -1,7 +1,5 @@
-import type { Model, Operation, Service } from "openapi-parse";
+import type { Client, Model, Operation, Service } from "openapi-parse";
 import { sort, unique } from "openapi-parse";
-
-import type { Client } from "../types/client";
 
 /**
  * Post process client
