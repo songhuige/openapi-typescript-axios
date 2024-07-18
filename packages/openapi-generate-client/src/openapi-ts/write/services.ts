@@ -17,6 +17,7 @@ import type {
 import { compiler } from "../compiler";
 import { getConfig, isStandaloneClient } from "../utils/config";
 import { setUniqueTypeName } from "./type";
+import type { HttpModule } from "./types";
 
 type OnNode = (node: Node) => void;
 type OnImport = (name: string) => void;
@@ -323,17 +324,24 @@ export const processService = (
 
   const methodNameBuilder = config.services.methodNameBuilder;
 
+  const httpModule: HttpModule = {
+    name: service.name,
+    httpFn: [],
+  };
+
   service.operations.forEach((operation) => {
+    const name = methodNameBuilder?.(operation) ?? operation.name;
     const expression = compiler.types.functionDeclaration({
-      name: methodNameBuilder?.(operation) ?? operation.name,
+      name: name,
       parameters: toOperationParamType(client, operation),
       returnType: toOperationReturnType(client, operation),
       statements: toOperationStatements(client, operation, onImport),
       comment: toOperationComment(operation),
     });
+    httpModule.httpFn.push(name);
     onNode(expression);
   });
-  return;
+  return httpModule;
 };
 
 export const processServices = async ({
@@ -344,17 +352,19 @@ export const processServices = async ({
   client: Client;
   files: Array<{ serviceName: string; file: TypeScriptFile }>;
   type: TypeScriptFile;
-}): Promise<void> => {
+}): Promise<Array<HttpModule> | undefined> => {
   if (!files || !files.length) {
     return;
   }
 
   const config = getConfig();
 
+  const httpModules: Array<HttpModule> = [];
+
   for (const service of client.services) {
     let imports: string[] = [];
     const serviceFile = files.find((i) => i.serviceName === service.name)?.file;
-    processService(
+    const httpModule = processService(
       client,
       service,
       (node) => {
@@ -364,6 +374,7 @@ export const processServices = async ({
         imports = [...imports, imported];
       }
     );
+    httpModules.push(httpModule);
     if (config.axiosInstPath) {
       serviceFile?.addImport([{ name: "request" }], config.axiosInstPath);
     }
@@ -379,4 +390,5 @@ export const processServices = async ({
       serviceFile?.addImport(importedTypes, `./${type.getName(false)}`);
     }
   }
+  return httpModules;
 };

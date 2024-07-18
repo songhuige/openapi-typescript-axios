@@ -21,6 +21,11 @@ import {
   toType,
 } from "./type";
 
+export interface HttpModule {
+  name: string;
+  httpFn: Array<string>;
+}
+
 export interface TypesProps {
   client: Client;
   model: Model;

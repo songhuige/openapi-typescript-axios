@@ -4,8 +4,15 @@ import { parse } from "openapi-parse";
 import { initConfigs } from "./openapi-ts";
 import type { UserConfig } from "./openapi-ts/types/config";
 import { writeClient } from "./openapi-ts/write/client";
+import type { HttpModule } from "./openapi-ts/write/types";
 import type { GenConfig } from "./types/config";
 import { loadConfig, startLint, toPascalCasePath } from "./utils";
+
+export interface OpenApiGenerateClient {
+  client: Client;
+  openApi: OpenApi;
+  httpModules: Array<HttpModule>;
+}
 
 async function gen() {
   const config = await loadConfig();
@@ -33,14 +40,13 @@ async function gen() {
     };
   });
 
-  const clients: Array<{
-    client: Client;
-    openApi: OpenApi;
-  }> = [];
+  const clients: Array<OpenApiGenerateClient> = [];
+
   for await (const option of clientOptions) {
     initConfigs(option);
     const { client, openApi } = await parse(option.input);
-    const files = await writeClient(openApi, client);
+    const [files, httpModules] = await writeClient(openApi, client);
+    clients.push({ client, openApi, httpModules });
     await startLint(files.map((i) => i.getPath()));
   }
 
@@ -53,7 +59,7 @@ export function methodNameBuilder(operation: Operation) {
 }
 
 export function start() {
-  gen();
+  return gen();
 }
 
 export function defineConfig(option: GenConfig) {

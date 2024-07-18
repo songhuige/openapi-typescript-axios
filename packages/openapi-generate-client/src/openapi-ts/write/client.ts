@@ -9,6 +9,7 @@ import { getConfig } from "../utils/config";
 import { processIndex } from "./index";
 import { processServices } from "./services";
 import { processResponseTransformers } from "./transformers";
+import type { HttpModule } from "./types";
 import { processTypes } from "./types";
 
 /**
@@ -21,7 +22,7 @@ export const writeClient = async (
   openApi: OpenApi,
   client: Client
   // templates: Templates
-): Promise<TypeScriptFile[]> => {
+): Promise<[TypeScriptFile[], HttpModule[]]> => {
   const config = getConfig();
 
   if (config.services.include && config.services.asClass) {
@@ -83,7 +84,11 @@ export const writeClient = async (
   }
 
   // services
-  await processServices({ client, files: files.services, type: files.types });
+  const httpModules = await processServices({
+    client,
+    files: files.services,
+    type: files.types,
+  });
 
   // deprecated files
   // await writeClientClass(openApi, outputPath, client, templates);
@@ -105,5 +110,5 @@ export const writeClient = async (
     .map((service) => service.file)
     .concat(files.types, files.index);
 
-  return _files;
+  return [_files, httpModules || []];
 };
