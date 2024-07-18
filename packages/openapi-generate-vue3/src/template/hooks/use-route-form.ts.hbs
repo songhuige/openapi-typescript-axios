@@ -1,0 +1,87 @@
+import { isFunction, isString } from "lodash-es";
+import { identity } from "ramda";
+
+import type { CommonFormOptions, FormType } from "./use-form";
+import { useForm } from "./use-form";
+
+interface RouteFormOptions<F extends object, UA, CA, R, CR, UR, Identity>
+  extends CommonFormOptions<F, UA, CA, R, CR, UR, Identity> {
+  /**
+   * 更新页面路由
+   */
+  routeUpdate?: string;
+  /**
+   * 更新页面路由
+   */
+  routeCreate?: string;
+  /**
+   * 详情页面路由
+   */
+  routeDetail?: string;
+  /**
+   * 列表路由
+   */
+  backRouteName?: string;
+  /**
+   * 保存操作是否back
+   */
+  autoBack?: boolean;
+}
+
+export function useRouteForm<F extends object, UA, CA, R, CR, UR, Identity>(
+  options: RouteFormOptions<F, UA, CA, R, CR, UR, Identity>,
+) {
+  const {
+    id,
+    initForm,
+    formInstance,
+    update,
+    create,
+    find,
+    routeUpdate,
+    routeCreate,
+    routeDetail,
+    backRouteName,
+    toUpdateParam = identity as (arg: F) => UA,
+    toCreateParam = identity as (arg: F) => CA,
+    toForm = identity as (arg: R) => F | Promise<F>,
+    onSuccess,
+    onFailure,
+    autoBack = true,
+  } = options;
+
+  const router = useRouter();
+  const rn = computed(() => router.currentRoute.value.name);
+
+  const formType = computed<FormType>(() => {
+    if (rn.value === routeUpdate) return "update";
+    if (rn.value === routeCreate) return "create";
+    if (rn.value === routeDetail) return "detail";
+  });
+
+  const onBack = () =>
+    isString(backRouteName) && backRouteName && router.push({ name: backRouteName });
+
+  const result = useForm({
+    formType,
+    initForm,
+    formInstance,
+    id,
+    update,
+    create,
+    find,
+    toUpdateParam,
+    toCreateParam,
+    toForm,
+    onSuccess: res => {
+      autoBack && onBack();
+      isFunction(onSuccess) && onSuccess(res);
+    },
+    onFailure,
+  });
+
+  return {
+    ...result,
+    onBack,
+  };
+}

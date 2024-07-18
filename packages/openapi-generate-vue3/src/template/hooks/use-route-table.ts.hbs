@@ -1,0 +1,62 @@
+import { type CommonTableOptions, useTable } from "./use-table";
+
+interface RouteTableOptions<T, C extends object, RR, RRM, Identity>
+  extends CommonTableOptions<T, C, RR, RRM, Identity> {
+  routeCreate: string;
+  routeUpdate: string;
+  routeDetail: string;
+}
+
+export function useRouteTable<T, C extends object, RR, RRM, Identity>(
+  options: RouteTableOptions<T, C, RR, RRM, Identity>,
+) {
+  const { routeCreate, routeUpdate, routeDetail, getRowId } = options;
+  const router = useRouter();
+
+  const {
+    pagingRef,
+    paramRef,
+    loadingRef,
+    formState,
+    onQuery,
+    onReset,
+    onRemove,
+    onRemoveMulti,
+    onHiddenFrom,
+    onCreate: _onCreate,
+    onUpdate: _onUpdate,
+    onDetail: _onDetail,
+  } = useTable(options);
+
+  function onCreate() {
+    _onCreate();
+    router.push({ name: routeCreate });
+  }
+
+  function onUpdate(row: T, id?: Identity) {
+    const _id = id || getRowId(row);
+    _onUpdate(row, _id);
+    router.push({ name: routeUpdate, params: { id: `${_id}` } });
+  }
+
+  function onDetail(row: T, id?: Identity) {
+    const _id = id || getRowId(row);
+    _onDetail(row, _id);
+    router.push({ name: routeDetail, params: { id: `${_id}` } });
+  }
+
+  return {
+    onQuery,
+    onReset,
+    pagingRef,
+    paramRef,
+    loadingRef,
+    onCreate,
+    onUpdate,
+    onDetail,
+    onRemove,
+    onRemoveMulti,
+    formState,
+    onHiddenFrom,
+  };
+}

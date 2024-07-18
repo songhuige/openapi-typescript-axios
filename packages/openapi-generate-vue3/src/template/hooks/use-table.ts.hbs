@@ -1,0 +1,162 @@
+import type { AxiosResponse } from "axios";
+import type { ElTable } from "element-plus";
+
+import { messageConfirm, messageError, messageSuccess } from "@/utils";
+
+import type { FormType } from "./use-form";
+import type { PageWrapper } from "./use-page";
+
+export type FormState<R, Identity> = {
+  formType: FormType;
+  show: boolean;
+  id?: Identity;
+  title: string;
+  entity?: R;
+};
+
+export interface CommonTableOptions<T, C extends object, RR, RRM, Identity> {
+  initParam: () => C;
+  loadFn: (args: C) => Promise<AxiosResponse<DataWrapper<PageWrapper<T>>>>;
+  getRowId?: (arg: T) => Identity;
+  tableRef: Ref<InstanceType<typeof ElTable> | undefined>;
+  remove?: (id: Identity) => Promise<AxiosResponse<RR>>;
+  removeMulti?: (id: Identity[]) => Promise<AxiosResponse<RRM>>;
+  name?: string;
+  autoLoad?: boolean;
+  autoRefresh?: boolean;
+}
+
+export function useTable<T, C extends object, RR, RRM, Identity>(
+  options: CommonTableOptions<T, C, RR, RRM, Identity>,
+) {
+  const {
+    initParam,
+    loadFn,
+    remove,
+    removeMulti,
+    name,
+    autoLoad = true,
+    getRowId,
+    tableRef,
+  } = options;
+  const paramRef = ref<C>();
+  paramRef.value = initParam();
+  const loadingRef = ref(false);
+  const pagingRef = shallowRef<PageWrapper<T>>({ list: [], total: 0 });
+
+  const formState = shallowReactive<FormState<T, Identity>>(initFormState());
+
+  if (autoLoad) query();
+
+  function initFormState(): FormState<T, Identity> {
+    return {
+      formType: "detail",
+      show: false,
+      title: "",
+    };
+  }
+
+  function query() {
+    const param = paramRef.value;
+    loadingRef.value = true;
+    return loadFn(param)
+      .then(res => res.data.data)
+      .then(data => (pagingRef.value = data))
+      .finally(() => (loadingRef.value = false));
+  }
+
+  async function onRemove(row: T) {
+    const id = getRowId(row);
+    if (!id) return Promise.reject("miss id");
+    if (!remove) return Promise.reject("miss remove");
+    const e = await messageConfirm("请确认是否删除");
+    if (!e) return;
+    return remove(id)
+      .then(() => {
+        query();
+        messageSuccess();
+      })
+      .catch(err => {
+        console.log(err);
+        messageError(err?.msg || "删除失败");
+      });
+  }
+
+  function onRemoveMulti() {
+    if (!tableRef.value) return Promise.reject("miss ref");
+
+    const rows = tableRef.value.getSelectionRows();
+    const ids = rows.map((i: { id: string }) => i.id);
+    if (!ids || !ids.length) {
+      messageError("请先选择删除项");
+      return Promise.reject("length 0");
+    }
+    if (!removeMulti) return Promise.reject("miss removeMulti");
+    messageConfirm("请确认是否删除").then(() => {
+      return removeMulti(ids)
+        .then(() => {
+          query();
+          messageSuccess();
+        })
+        .catch(err => {
+          console.log(err);
+          messageError(err?.msg || "删除失败");
+        });
+    });
+  }
+
+  function onCreate() {
+    formState.formType = "create";
+    formState.show = true;
+    formState.id = null;
+    formState.title = `新增${name || ""}`;
+  }
+
+  function onUpdate(row: T, id?: Identity) {
+    if (!getRowId) {
+      throw new Error("缺少参数getRowId");
+    }
+    formState.formType = "update";
+    formState.show = true;
+    formState.id = id || getRowId(row);
+    formState.title = `编辑${name || ""}`;
+    formState.entity = row;
+  }
+
+  function onDetail(row: T, id?: Identity) {
+    if (!getRowId) {
+      throw new Error("缺少参数getRowId");
+    }
+    formState.formType = "detail";
+    formState.show = true;
+    formState.id = id || getRowId(row);
+    formState.title = `${name || ""}详情`;
+    formState.entity = row;
+  }
+
+  function onHiddenFrom() {
+    formState.show = false;
+    formState.entity = null;
+    formState.id = null;
+  }
+
+  function reset() {
+    paramRef.value = initParam();
+    query();
+  }
+
+  return {
+    pagingRef,
+    paramRef,
+    loadingRef,
+    formState,
+    onQuery: query,
+    onReset: reset,
+    onRemove,
+    onRemoveMulti,
+    onHiddenFrom,
+    onCreate,
+    onUpdate,
+    onDetail,
+  };
+}

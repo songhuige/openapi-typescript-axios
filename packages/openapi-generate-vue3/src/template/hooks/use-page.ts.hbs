@@ -1,0 +1,36 @@
+import { isArray } from "lodash-es";
+import type { MaybeRefOrGetter } from "vue";
+
+export type PageWrapper<T> = {
+  total?: number;
+  list?: Array<T>;
+};
+
+export function usePage<T>(
+  arg: MaybeRefOrGetter<T[]>,
+  paging: MaybeRefOrGetter<{ page: number; pageSize: number }>,
+) {
+  const pageRef = ref<PageWrapper<T>>();
+
+  watch(
+    [() => toValue(arg), () => toValue(paging)],
+    ([v, p]) => {
+      pageRef.value = toPage(v, p);
+    },
+    { immediate: true },
+  );
+
+  return { pageRef };
+}
+
+function toPage<T>(arg: T[], paging: { page: number; pageSize: number }) {
+  if (isArray) {
+    const { page, pageSize } = paging;
+    const limitData = arg.slice(page * pageSize, (page + 1) * pageSize);
+    return {
+      total: arg.length,
+      list: limitData,
+    };
+  }
+  return { total: 0, list: [] as T[] };
+}

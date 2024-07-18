@@ -14,14 +14,8 @@ export interface OpenApiGenerateClient {
   httpModules: Array<HttpModule>;
 }
 
-async function gen() {
-  const config = await loadConfig();
-  if (!config || config?.isEmpty) {
-    console.error("Error：未找到配置文件，使用默认配置");
-    process.exit();
-  }
-
-  const options: GenConfig = config!.config;
+async function gen(option?: GenConfig) {
+  const options: GenConfig = await getConfig(option);
 
   const clientOptions: UserConfig[] = options.services.map((service) => {
     const axiosInstPath = options.axiosInstPath || service.axiosInstPath || "";
@@ -53,13 +47,25 @@ async function gen() {
   return clients;
 }
 
+async function getConfig(option?: GenConfig) {
+  if (option) return option;
+
+  const config = await loadConfig();
+  if (!config || config?.isEmpty) {
+    console.error("Error：未找到配置文件，使用默认配置");
+    process.exit();
+  }
+
+  return config!.config;
+}
+
 export function methodNameBuilder(operation: Operation) {
   const { method, path } = operation;
   return `${method.toLowerCase()}${toPascalCasePath(path)}`;
 }
 
-export function start() {
-  return gen();
+export function start(option?: GenConfig) {
+  return gen(option);
 }
 
 export function defineConfig(option: GenConfig) {

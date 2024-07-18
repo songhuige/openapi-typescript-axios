@@ -1,0 +1,200 @@
+import type { AxiosResponse } from "axios";
+import type { ElForm } from "element-plus";
+import { cloneDeep, identity } from "lodash-es";
+import type { MaybeRefOrGetter, Ref } from "vue";
+
+import type { ClientError } from "@/http/axios-instance";
+import { isFunction, isPromise, messageError, messageSuccess } from "@/utils";
+
+export type FormType = "create" | "update" | "detail";
+
+export interface CommonFormOptions<F extends object, UA, CA, R, CR, UR, Identity> {
+  /**
+   * form表单ref
+   */
+  formInstance: Ref<InstanceType<typeof ElForm> | undefined>;
+  /**
+   * 初始化form
+   */
+  initForm: () => F;
+  /**
+   * 查询用的id
+   */
+  id?: MaybeRefOrGetter<Identity>;
+  /**
+   * 更新方法
+   */
+  update?: (args: UA) => Promise<AxiosResponse<UR>>;
+  /**
+   * 新增方法
+   */
+  create?: (args: CA) => Promise<AxiosResponse<CR>>;
+  /**
+   * 通过id查找实体
+   */
+  find?: (id: Identity) => Promise<AxiosResponse<DataWrapper<R>>> | R;
+  /**
+   * 将form表单映射为更新参数
+   */
+  toUpdateParam?: (arg: F) => UA;
+  /**
+   * 将form表单映射为新增参数
+   */
+  toCreateParam?: (arg: F) => CA;
+  /**
+   * 将查询的数据映射为表单数据
+   */
+  toForm?: (
+    arg: R,
+    options: { isUpdate: boolean; isDetail: boolean; isCreate: boolean },
+  ) => F | Promise<F>;
+  /**
+   * 成功回调
+   */
+  onSuccess?: (arg: AxiosResponse<UR | CR>) => void;
+  /**
+   * 失败回调
+   */
+  onFailure?: (error: any) => void;
+  /**
+   * 组件deactivated后重置表单
+   */
+  autoClean?: boolean;
+}
+
+interface FormOptions<F extends object, UA, CA, R, CR, UR, Identity>
+  extends CommonFormOptions<F, UA, CA, R, CR, UR, Identity> {
+  /**
+   * 表单类型
+   */
+  formType: MaybeRefOrGetter<FormType>;
+}
+
+/**
+ *
+ * initForm -> form -> toCreateParam -> create
+ *
+ * find -> toForm -> form -> toUpdateParam -> update
+ *                          \
+ *                            view
+ */
+export function useForm<F extends object, UA, CA, R, CR, UR, Identity>(
+  options: FormOptions<F, UA, CA, R, CR, UR, Identity>,
+) {
+  const {
+    id,
+    formType,
+    initForm,
+    formInstance,
+    update,
+    create,
+    find,
+    toUpdateParam = identity as (arg: F) => UA,
+    toCreateParam = identity as (arg: F) => CA,
+    toForm = identity as (arg: R) => F | Promise<F>,
+    onSuccess,
+    onFailure,
+    autoClean = true,
+  } = options;
+
+  const formRef = ref<F>();
+  formRef.value = initForm();
+
+  const loading = ref(false);
+  const isUpdate = computed(() => toValue(formType) === "update");
+  const isCreate = computed(() => toValue(formType) === "create");
+  const isDetail = computed(() => toValue(formType) === "detail");
+  const editable = computed(() => {
+    const value = toValue(formType);
+    return value === "create" || value === "update";
+  });
+
+  const init = () => {
+    const type = toValue(formType);
+
+    if (type === "create") {
+      const form = initForm();
+      formRef.value = form;
+      return Promise.resolve(form);
+    }
+
+    if (!isFunction(find)) return Promise.reject("缺少find函数");
+
+    loading.value = true;
+
+    const result = find(toValue(id));
+    const $data = isPromise(result)
+      ? result.then(res => res.data.data)
+      : Promise.resolve(cloneDeep(result));
+
+    return $data
+      .then(data => {
+        const form = toForm(data, {
+          isUpdate: isUpdate.value,
+          isDetail: isUpdate.value,
+          isCreate: isUpdate.value,
+        });
+        return form;
+      })
+      .then(form => (formRef.value = form))
+      .catch(err => {
+        console.log(err);
+        throw err;
+      })
+      .finally(() => (loading.value = false));
+  };
+
+  watch(() => toValue(id), init, { immediate: true });
+
+  autoClean &&
+    onDeactivated(() => {
+      formRef.value = initForm();
+    });
+
+  const updateOrCreate = () => {
+    const saveFn = update || create;
+
+    if (!saveFn) return Promise.reject("缺少create或update参数");
+
+    const promise = isUpdate.value
+      ? update(toUpdateParam(formRef.value))
+      : isCreate.value
+      ? create(toCreateParam(formRef.value))
+      : Promise.reject("未确定的页面");
+
+    loading.value = true;
+
+    return promise
+      .then(res => {
+        isFunction(onSuccess) && onSuccess(res);
+        messageSuccess();
+      })
+      .catch((err: ClientError) => {
+        isFunction(onFailure) && onFailure(err);
+        messageError(err.msg);
+        throw new Error(err.msg);
+      })
+      .finally(() => (loading.value = false));
+  };
+
+  const onSave = () => {
+    return formInstance.value
+      .validate()
+      .catch(() => false)
+      .then(isValid => {
+        if (!isValid) return;
+        return updateOrCreate();
+      });
+  };
+
+  return {
+    form: formRef,
+    onSave,
+    onReload: init,
+    editable,
+    isUpdate,
+    isDetail,
+    loading,
+    isCreate,
+  };
+}
