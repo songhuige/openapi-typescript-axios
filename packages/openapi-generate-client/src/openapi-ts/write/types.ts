@@ -1,12 +1,16 @@
+import type { Method, Model, OperationParameter } from "openapi-parse";
+import {
+  enumEntry,
+  enumUnionType,
+  escapeComment,
+  sortByName,
+  sorterByName,
+} from "openapi-parse";
+
 import type { Comments, Node, TypeScriptFile } from "../compiler";
 import { compiler } from "../compiler";
-import type { Model, OperationParameter } from "../../../../openapi-parse/src";
-import type { Method } from "../../../../openapi-parse/src/common/interfaces/client";
 import type { Client } from "../types/client";
 import { getConfig, isStandaloneClient } from "../utils/config";
-import { enumEntry, enumUnionType } from "../utils/enum";
-import { escapeComment } from "../utils/escape";
-import { sortByName, sorterByName } from "../utils/sort";
 import {
   operationDataTypeName,
   operationErrorTypeName,

@@ -1,4 +1,11 @@
 import camelcase from "camelcase";
+import type {
+  Model,
+  Operation,
+  OperationParameter,
+  Service,
+} from "openapi-parse";
+import { escapeComment, escapeName, unique } from "openapi-parse";
 
 import type {
   Comments,
@@ -7,16 +14,8 @@ import type {
   TypeScriptFile,
 } from "../compiler";
 import { compiler } from "../compiler";
-import type {
-  Model,
-  Operation,
-  OperationParameter,
-  Service,
-} from "../../../../openapi-parse/src";
 import type { Client } from "../types/client";
 import { getConfig, isStandaloneClient } from "../utils/config";
-import { escapeComment, escapeName } from "../utils/escape";
-import { unique } from "../utils/unique";
 import { setUniqueTypeName } from "./type";
 
 type OnNode = (node: Node) => void;

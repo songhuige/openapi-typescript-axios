@@ -8,7 +8,7 @@ const config = defineConfig({
   input: "src/node.ts",
   output: [
     {
-      file: "dist/openapi-typescript-gen.cjs",
+      file: "dist/openapi-gen-cli.cjs",
       format: "cjs",
       sourcemap: false,
     },

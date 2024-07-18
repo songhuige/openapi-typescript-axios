@@ -1,7 +1,7 @@
-import { parse } from "../../openapi-parse/src";
+import { parse } from "openapi-parse";
+
 import { initConfigs } from "./openapi-ts";
 import type { UserConfig } from "./openapi-ts/types/config";
-import { postProcessClient } from "./openapi-ts/utils/postprocess";
 import { writeClient } from "./openapi-ts/write/client";
 import type { GenConfig } from "./types/config";
 import { loadConfig, startLint, toPascalCasePath } from "./utils";
@@ -40,7 +40,7 @@ async function gen() {
   for await (const option of clientOptions) {
     initConfigs(option);
     console.log("正在生成http client文件...");
-    const client = postProcessClient(parse(openApi));
+    const { client, openApi } = await parse(option.input);
     const files = await writeClient(openApi, client);
     console.log("生成http client文件完成...");
     console.log("正在格式化代码...");

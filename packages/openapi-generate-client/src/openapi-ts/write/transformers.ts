@@ -1,10 +1,7 @@
+import type { ModelMeta, OperationResponse } from "openapi-parse";
 import ts from "typescript";
 
 import { compiler } from "../compiler";
-import type {
-  ModelMeta,
-  OperationResponse,
-} from "../../../../openapi-parse/src/common/interfaces/client";
 import { getConfig } from "../utils/config";
 import {
   modelResponseTransformerTypeName,

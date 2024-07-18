@@ -1,11 +1,16 @@
+import type { Model } from "openapi-parse";
+import {
+  enumValue,
+  escapeComment,
+  escapeName,
+  transformTypeKeyName,
+  unescapeName,
+  unique,
+} from "openapi-parse";
+
 import { compiler, type Property, type TypeNode } from "../compiler";
-import type { Model } from "../../../../openapi-parse/src";
-import { transformTypeKeyName } from "../../../../openapi-parse/src/common/parser/type";
 import type { Client } from "../types/client";
 import { getConfig, isStandaloneClient } from "../utils/config";
-import { enumValue } from "../utils/enum";
-import { escapeComment, escapeName, unescapeName } from "../utils/escape";
-import { unique } from "../utils/unique";
 
 const base = (model: Model) => {
   const config = getConfig();

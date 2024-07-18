@@ -1,7 +1,7 @@
+import { unescapeName } from "openapi-parse";
 import ts from "typescript";
 
 import { getConfig } from "../utils/config";
-import { unescapeName } from "../utils/escape";
 
 export interface ImportExportItemObject {
   alias?: string;

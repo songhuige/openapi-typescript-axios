@@ -1,7 +1,7 @@
 {
   "name": "openapi-parse",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.cjs",
   "author": "liusonghui <itessay@163.com>",
   "license": "MIT",
   "packageManager": "yarn@1.22.5",
@@ -14,7 +14,7 @@
     "build": "npm run build-bundle && npm run  build-types",
     "build-bundle": "rollup --config rollup.config.ts --configPlugin typescript",
     "build-types-roll": "rollup --config rollup.dts.config.ts --configPlugin typescript && rimraf temp",
-    "build-types-temp": "tsc --emitDeclarationOnly --outDir temp -p ./tsconfig.build.json",
+    "build-types-temp": "tsc --emitDeclarationOnly -p tsconfig.types.json && tsc-alias -p tsconfig.types.json",
     "build-types": "npm run build-types-temp && npm run build-types-roll",
     "dev": "yarn build --watch"
   },
