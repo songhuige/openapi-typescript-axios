@@ -5,11 +5,11 @@ const config = defineConfig({
   services: [
     {
       input: "http://117.139.13.157:25031/api/command/v2/api-docs",
-      output: "./http/command",
+      output: "./src/http/command",
     },
     {
       input: "http://117.139.13.157:25031/api/common/v2/api-docs",
-      output: "./http/common",
+      output: "./src/http/common",
     },
   ],
 });

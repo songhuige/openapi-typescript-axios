@@ -18,6 +18,9 @@
   "bin": {
     "openapi-gen-cli": "./dist/openapi-gen-cli.cjs"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "yarn build-bin && yarn build-index",
     "build-bin": "rollup --config rollup.config.bin.ts --configPlugin typescript",

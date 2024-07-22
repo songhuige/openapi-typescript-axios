@@ -16,7 +16,10 @@ import { stringToTsNodes, tsNodeToString } from "./utils";
 export type { Property } from "./typedef";
 export type { FunctionParameter } from "./types";
 export type { Comments } from "./utils";
-export type { ClassElement, Node, TypeNode } from "typescript";
+
+export type TypeNode = ts.TypeNode;
+export type Node = ts.Node;
+export type ClassElement = ts.ClassElement;
 
 const splitNameAndExtension = (fileName: string) => {
   const match = fileName.match(/\.[0-9a-z]+$/i);

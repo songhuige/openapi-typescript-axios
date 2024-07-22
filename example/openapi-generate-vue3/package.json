@@ -1,0 +1,12 @@
+{
+  "name": "example-openapi-generate-vue3",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "openapi-generate-vue3": "1.0.0"
+  },
+  "scripts": {
+    "generate-client": "openapi-gen-vue3-cli"
+  }
+}

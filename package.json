@@ -9,7 +9,7 @@
   "type": "module",
   "workspaces": [
     "packages/*",
-    "example"
+    "example/*"
   ],
   "scripts": {
     "build-openapi-parse": "yarn workspace openapi-parse build",

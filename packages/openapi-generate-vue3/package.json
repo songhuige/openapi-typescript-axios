@@ -1,5 +1,5 @@
 {
-  "name": "openapi-parse",
+  "name": "openapi-generate-vue3",
   "version": "1.0.0",
   "author": "liusonghui <itessay@163.com>",
   "license": "MIT",
@@ -15,23 +15,23 @@
       "require": "./dist/index.cjs"
     }
   },
+  "bin": {
+    "openapi-gen-vue3-cli": "./dist/openapi-gen-vue3-cli.cjs"
+  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "yarn build-bundle && yarn build-types",
+    "build": "yarn build-bin && yarn build-index",
+    "build-bin": "rollup --config rollup.config.bin.ts --configPlugin typescript",
+    "build-index": "yarn build-bundle && yarn build-types",
     "build-bundle": "rollup --config rollup.config.ts --configPlugin typescript",
     "build-types-roll": "rollup --config rollup.dts.config.ts --configPlugin typescript && rimraf temp",
     "build-types-temp": "tsc --emitDeclarationOnly -p tsconfig.types.json && tsc-alias -p tsconfig.types.json",
-    "build-types": "yarn build-types-temp && yarn build-types-roll",
+    "build-types": "npm run build-types-temp && npm run build-types-roll",
     "dev": "yarn build --watch"
   },
   "devDependencies": {},
-  "peerDependencies": {
-    "element-plus": "^2.15.6",
-    "vue": "^3.2.37",
-    "lodash-es": "^4.17.21",
-    "axios": "^1.3.4"
-  },
+  "peerDependencies": {},
   "dependencies": {}
 }

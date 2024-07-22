@@ -1,8 +1,7 @@
 .DS_Store
 
 node_modules
-dist
-http
+src/http
 
 # Log files
 npm-debug.log*

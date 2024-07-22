@@ -8,6 +8,7 @@ import type { HttpModule } from "./openapi-ts/write/types";
 import type { GenConfig } from "./types/config";
 import { loadConfig, startLint, toPascalCasePath } from "./utils";
 
+export type { GenConfig } from "./types/config";
 export interface OpenApiGenerateClient {
   client: Client;
   openApi: OpenApi;
@@ -18,7 +19,7 @@ async function gen(option?: GenConfig) {
   const options: GenConfig = await getConfig(option);
 
   const clientOptions: UserConfig[] = options.services.map((service) => {
-    const axiosInstPath = options.axiosInstPath || service.axiosInstPath || "";
+    const axiosInstPath = service.axiosInstPath || options.axiosInstPath || "";
     return {
       axiosInstPath: axiosInstPath,
       input: service.input,
