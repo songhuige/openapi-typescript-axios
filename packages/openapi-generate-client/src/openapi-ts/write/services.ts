@@ -7,19 +7,15 @@ import type {
   Service,
 } from "openapi-parse";
 import { escapeComment, escapeName, unique } from "openapi-parse";
+import type ts from "typescript";
 
-import type {
-  Comments,
-  FunctionParameter,
-  Node,
-  TypeScriptFile,
-} from "../compiler";
+import type { Comments, FunctionParameter, TypeScriptFile } from "../compiler";
 import { compiler } from "../compiler";
 import { getConfig, isStandaloneClient } from "../utils/config";
 import { setUniqueTypeName } from "./type";
 import type { HttpModule } from "./types";
 
-type OnNode = (node: Node) => void;
+type OnNode = (node: ts.Node) => void;
 type OnImport = (name: string) => void;
 
 const generateImport = ({

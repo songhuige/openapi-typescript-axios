@@ -6,8 +6,9 @@ import {
   sortByName,
   sorterByName,
 } from "openapi-parse";
+import type ts from "typescript";
 
-import type { Comments, Node, TypeScriptFile } from "../compiler";
+import type { Comments, TypeScriptFile } from "../compiler";
 import { compiler } from "../compiler";
 import { getConfig, isStandaloneClient } from "../utils/config";
 import {
@@ -29,7 +30,7 @@ export interface HttpModule {
 export interface TypesProps {
   client: Client;
   model: Model;
-  onNode: (node: Node) => void;
+  onNode: (node: ts.Node) => void;
   onRemoveNode?: VoidFunction;
 }
 

@@ -7,8 +7,9 @@ import {
   unescapeName,
   unique,
 } from "openapi-parse";
+import type ts from "typescript";
 
-import { compiler, type Property, type TypeNode } from "../compiler";
+import { compiler, type Property } from "../compiler";
 import { getConfig, isStandaloneClient } from "../utils/config";
 
 const base = (model: Model) => {
@@ -142,7 +143,7 @@ const typeInterface = (model: Model) => {
   return compiler.typedef.interface(properties, model.isNullable);
 };
 
-export const toType = (model: Model): TypeNode => {
+export const toType = (model: Model): ts.TypeNode => {
   switch (model.export) {
     case "all-of":
       return typeIntersect(model);

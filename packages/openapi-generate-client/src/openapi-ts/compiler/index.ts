@@ -17,10 +17,6 @@ export type { Property } from "./typedef";
 export type { FunctionParameter } from "./types";
 export type { Comments } from "./utils";
 
-export type TypeNode = ts.TypeNode;
-export type Node = ts.Node;
-export type ClassElement = ts.ClassElement;
-
 const splitNameAndExtension = (fileName: string) => {
   const match = fileName.match(/\.[0-9a-z]+$/i);
   const extension = match ? match[0].slice(1) : "";

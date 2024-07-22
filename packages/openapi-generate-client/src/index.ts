@@ -53,7 +53,7 @@ async function getConfig(option?: GenConfig) {
 
   const config = await loadConfig();
   if (!config || config?.isEmpty) {
-    console.error("Error：未找到配置文件，使用默认配置");
+    console.error("Error：未找到配置文件，使用默认配置。");
     process.exit();
   }
 
