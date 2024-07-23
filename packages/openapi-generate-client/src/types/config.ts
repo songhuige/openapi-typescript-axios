@@ -1,8 +1,7 @@
 export type GenConfig = {
-  axiosInstPath?: string;
+  rootDir: string;
   services: Array<{
     input: string;
     output: string;
-    axiosInstPath?: string;
   }>;
 };

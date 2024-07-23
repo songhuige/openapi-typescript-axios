@@ -1,7 +1,7 @@
 import { defineConfig } from "openapi-generate-client";
 
 const config = defineConfig({
-  axiosInstPath: "@/http/axios-instance",
+  rootDir: "./src/http",
   services: [
     {
       input: "http://117.139.13.157:25031/api/command/v2/api-docs",

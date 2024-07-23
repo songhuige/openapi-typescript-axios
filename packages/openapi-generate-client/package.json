@@ -19,7 +19,8 @@
     "openapi-gen-cli": "./dist/openapi-gen-cli.cjs"
   },
   "files": [
-    "dist"
+    "dist",
+    "src/template"
   ],
   "scripts": {
     "build": "yarn build-bin && yarn build-index",
