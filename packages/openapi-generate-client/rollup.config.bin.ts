@@ -10,7 +10,7 @@ const config = defineConfig({
     {
       file: "dist/openapi-gen-cli.cjs",
       format: "cjs",
-      sourcemap: false,
+      sourcemap: true,
     },
   ],
   plugins: [

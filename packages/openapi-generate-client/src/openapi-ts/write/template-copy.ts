@@ -6,7 +6,7 @@ import type { GenConfig } from "@/types/config";
 export function copyAxios(config: GenConfig) {
   const rootDir = config.rootDir;
   const targetDir = resolve(rootDir);
-  const axiosSourcePath = join(__dirname, "../src/template/axios-instance.ts");
+  const axiosSourcePath = resolve("./src/template/axios-instance.ts");
   const target = join(targetDir, "./axios-instance.ts");
 
   mkdirSync(targetDir, { recursive: true });
