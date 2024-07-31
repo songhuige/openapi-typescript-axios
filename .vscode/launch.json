@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "ts-node2",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceRoot}\\packages\\openapi-generate-client",
+      "args": [
+        "src\\node.ts" // ${relativeFile} 是表示当前打开的文件
+      ],
+      "runtimeArgs": [
+        "-r",
+        "${workspaceRoot}\\node_modules\\ts-node\\register",
+        "--loader",
+        "ts-node/esm",
+        "--experimental-specifier-resolution",
+        "node"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std"
+    }
+  ]
+}

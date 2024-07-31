@@ -7,6 +7,8 @@ import { getOpenApiSpec } from "./utils/getOpenApiSpec";
 
 export type * from "./common/interfaces";
 export * from "./types/client";
+export * from "@/common/parser/sanitize";
+export * from "@/common/parser/type";
 export * from "@/utils";
 
 /**
