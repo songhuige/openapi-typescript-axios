@@ -31,7 +31,7 @@ async function gen(userConfig?: GenConfig) {
       },
       services: {
         asClass: true,
-        methodNameBuilder,
+        methodNameBuilder: service.methodNameBuilder || methodNameBuilder,
       },
     };
   });

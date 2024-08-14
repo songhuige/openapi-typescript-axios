@@ -70,6 +70,19 @@ export function toPascalCasePath(str: string) {
   return capitalizeFirstLetter(str);
 }
 
+// 将url的path部分转小驼峰
+export function toCamelCasePath(str: string) {
+  str = str
+    .split("/")
+    .filter((i) => !!i)
+    .map((path) => camelCase(path))
+    .map((path) => replaceNonIdentifier(path))
+    .filter((i) => !!i)
+    .join("_");
+
+  return str.charAt(0).toLowerCase() + str.slice(1);
+}
+
 // 替换掉除标识符以外的字符
 export function replaceNonIdentifier(str: string) {
   return str.replace(/[^a-zA-Z0-9_]/g, "$");
