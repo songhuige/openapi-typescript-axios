@@ -41,5 +41,8 @@
   "peerDependencies": {
     "axios": "^1.7.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "cosmiconfig-typescript-loader": "^4.3.0",
+    "ts-node": "^10.9.1"
+  }
 }
