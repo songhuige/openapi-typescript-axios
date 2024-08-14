@@ -24,12 +24,13 @@
   ],
   "scripts": {
     "build": "yarn build-bin && yarn build-index",
-    "build-bin": "rollup --config rollup.config.bin.ts --configPlugin typescript",
+    "build-bin": "rollup --config rollup.config.bin.ts --configPlugin typescript && yarn copy-template",
     "build-index": "yarn build-bundle && yarn build-types",
     "build-bundle": "rollup --config rollup.config.ts --configPlugin typescript",
     "build-types-roll": "rollup --config rollup.dts.config.ts --configPlugin typescript",
     "build-types-temp": "tsc --emitDeclarationOnly -p tsconfig.types.json && tsc-alias -p tsconfig.types.json",
     "build-types": "npm run build-types-temp && npm run build-types-roll",
+    "copy-template": "ncp src/template dist/template",
     "watch:build-types-temp": "tsc -w --emitDeclarationOnly -p tsconfig.types.json && tsc-alias -p tsconfig.types.json",
     "watch:build-types-roll": "rollup -w --config rollup.dts.config.ts --configPlugin typescript",
     "watch:build-bundle": "yarn build-bundle --watch",
@@ -37,6 +38,8 @@
     "dev": "yarn build-types-temp && concurrently \"yarn build-bundle --watch\" \"yarn build-bin --watch\" \"yarn watch:build-types-temp\" \"yarn watch:build-types-roll\""
   },
   "devDependencies": {},
-  "peerDependencies": {},
+  "peerDependencies": {
+    "axios": "^1.7.0"
+  },
   "dependencies": {}
 }
